@@ -1,95 +1,202 @@
+<!-- templates/produtos/index.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Produtos — AAPM SENAI</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Produtos</h1>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
 
-    {% if request.query_params.get('criado') == 'ok' %}
-        <p style="color:green">Produto criado com sucesso!</p>
-    {% endif %}
-    {% if request.query_params.get('desativado') == 'ok' %}
-        <p style="color:green">Produto desativado.</p>
-    {% endif %}
+    <!-- Header / Navbar -->
+    <header class="w-full bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="px-3.5 py-1.5 bg-red-600 text-white font-bold text-sm rounded-xl shadow-sm tracking-wider flex items-center justify-center">
+                    AAPM
+                </div>
+                <span class="font-bold text-slate-900 text-base">Sistema de Estoque</span>
+         
+    </header>
 
-    <!-- Filtros -->
-    <form method="get" action="/produtos">
-        <input  type="text"
-                name="busca"
-                placeholder="Buscar por nome..."
-                value="{{ busca }}">
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-8 space-y-6">
 
-        <select name="categoria_id">
-            <option value="0">Todas as categorias</option>
-            {% for c in categorias %}
-                <option value="{{ c.id }}"
-                    {{ 'selected' if categoria_id == c.id else '' }}>
-                    {{ c.nome }}
-                </option>
-            {% endfor %}
-        </select>
-
-        <button type="submit">Filtrar</button>
-
-        {% if busca or categoria_id %}
-            <a href="/produtos">Limpar</a>
+        <!-- Notificações (Alertas) -->
+        {% if request.query_params.get('criado') == 'ok' %}
+            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
+                <span>✓</span> Produto criado com sucesso!
+            </div>
         {% endif %}
-    </form>
 
-    {% if usuario.role == 'admin' %}
-        <a href="/produtos/novo">+ Novo produto</a>
-    {% endif %}
+        {% if request.query_params.get('desativado') == 'ok' %}
+            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
+                <span>✓</span> Produto desativado com sucesso.
+            </div>
+        {% endif %}
 
-    <table border="1" cellpadding="8">
-        <thead>
-            <tr>
-                <th>Imagem</th>
-                <th>Nome</th>
-                <th>Categoria</th>
-                <th>Preço</th>
-                <th>Estoque</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for p in produtos %}
-            <tr>
-                <td>
-                    <img src="{{ p.imagem_url }}"
-                         alt="{{ p.nome }}"
-                         width="50" height="50"
-                         style="object-fit:cover">
-                </td>
-                <td><a href="/produtos/{{ p.id }}">{{ p.nome }}</a></td>
-                <td>{{ p.categoria.nome if p.categoria else "—" }}</td>
-                <td>R$ {{ "%.2f"|format(p.preco) }}</td>
-                <td>{{ p.estoque_atual }}</td>
-                <td>
-                    {% if usuario.role == 'admin' %}
-                        <a href="/produtos/{{ p.id }}/editar">Editar</a>
-                        <form action="/produtos/{{ p.id }}/desativar"
-                              method="post"
-                              style="display:inline"
-                              onsubmit="return confirm('Desativar {{ p.nome }}?')">
-                            <button type="submit">Desativar</button>
-                        </form>
-                    {% endif %}
-                </td>
-            </tr>
-            {% endfor %}
+        <!-- Cabeçalho da Seção e Ação Principal -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Produtos</h1>
+                <p class="text-slate-500 text-sm mt-1">Gerencie os itens cadastrados no estoque do SENAI.</p>
+            </div>
 
-            {% if not produtos %}
-            <tr>
-                <td colspan="6" style="text-align:center">
-                    Nenhum produto encontrado.
-                </td>
-            </tr>
+            {% if usuario.role == 'admin' %}
+                <a href="/produtos/novo" 
+                   class="inline-flex items-center justify-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-200">
+                    + Novo produto
+                </a>
             {% endif %}
-        </tbody>
-    </table>
+        </div>
 
-    <p><a href="/">← Dashboard</a></p>
+        <!-- Barra de Filtros de Busca -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80">
+            <form method="get" action="/produtos" class="flex flex-wrap items-center gap-3">
+                
+                <!-- Campo de Pesquisa -->
+                <div class="flex-1 min-w-[200px]">
+                    <input type="text"
+                           name="busca"
+                           placeholder="Buscar por nome..."
+                           value="{{ busca }}"
+                           class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all">
+                </div>
+
+                <!-- Select de Categoria -->
+                <div class="w-full sm:w-auto">
+                    <select name="categoria_id" 
+                            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all">
+                        <option value="0">Todas as categorias</option>
+                        {% for c in categorias %}
+                            <option value="{{ c.id }}"
+                                {{ 'selected' if categoria_id == c.id else '' }}>
+                                {{ c.nome }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Botão Filtrar -->
+                <button type="submit" 
+                        class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white font-medium text-sm rounded-xl transition-colors shadow-sm">
+                    Filtrar
+                </button>
+
+                <!-- Botão Limpar Filtros -->
+                {% if busca or categoria_id %}
+                    <a href="/produtos" 
+                       class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium text-sm rounded-xl transition-colors">
+                        Limpar
+                    </a>
+                {% endif %}
+            </form>
+        </div>
+
+        <!-- Tabela de Produtos -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 uppercase font-semibold text-xs tracking-wider">
+                        <tr>
+                            <th class="px-6 py-4">Imagem</th>
+                            <th class="px-6 py-4">Nome</th>
+                            <th class="px-6 py-4">Categoria</th>
+                            <th class="px-6 py-4">Preço</th>
+                            <th class="px-6 py-4">Estoque</th>
+                            <th class="px-6 py-4 text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        {% for p in produtos %}
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <!-- Imagem -->
+                            <td class="px-6 py-3">
+                                <div class="w-12 h-12 bg-slate-100 rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center shrink-0">
+                                    {% if p.imagem_url %}
+                                        <img src="{{ p.imagem_url }}"
+                                             alt="{{ p.nome }}"
+                                             class="w-full h-full object-cover">
+                                    {% else %}
+                                        <span class="text-xs text-slate-400">s/ img</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+
+                            <!-- Nome -->
+                            <td class="px-6 py-4 font-semibold text-slate-900">
+                                <a href="/produtos/{{ p.id }}" class="hover:text-red-600 transition-colors">
+                                    {{ p.nome }}
+                                </a>
+                            </td>
+
+                            <!-- Categoria -->
+                            <td class="px-6 py-4 text-slate-500 whitespace-nowrap">
+                                {{ p.categoria.nome if p.categoria else "—" }}
+                            </td>
+
+                            <!-- Preço -->
+                            <td class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">
+                                R$ {{ "%.2f"|format(p.preco) }}
+                            </td>
+
+                            <!-- Estoque -->
+                            <td class="px-6 py-4 font-bold text-slate-900 whitespace-nowrap">
+                                {{ p.estoque_atual }}
+                            </td>
+
+                            <!-- Ações -->
+                            <td class="px-6 py-4 text-right whitespace-nowrap">
+                                {% if usuario.role == 'admin' %}
+                                    <div class="inline-flex items-center justify-end gap-2">
+                                        <a href="/produtos/{{ p.id }}/editar" 
+                                           class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs rounded-lg transition-colors">
+                                            Editar
+                                        </a>
+
+                                        <form action="/produtos/{{ p.id }}/desativar"
+                                              method="post"
+                                              class="inline"
+                                              onsubmit="return confirm('Desativar {{ p.nome }}?')">
+                                            <button type="submit" 
+                                                    class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 font-medium text-xs rounded-lg transition-colors border border-red-100">
+                                                Desativar
+                                            </button>
+                                        </form>
+                                    </div>
+                                {% else %}
+                                    <span class="text-xs text-slate-400">—</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        <!-- Estado Vazio -->
+                        {% if not produtos %}
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center text-slate-400">
+                                <div class="space-y-1">
+                                    <p class="text-base font-medium text-slate-600">Nenhum produto encontrado.</p>
+                                    <p class="text-xs">Tente ajustar seus filtros ou adicione um novo produto.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Link para o Dashboard -->
+        <div class="pt-2">
+            <a href="/" class="text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors">
+                ← Dashboard
+            </a>
+        </div>
+
+    </main>
+
 </body>
 </html>
