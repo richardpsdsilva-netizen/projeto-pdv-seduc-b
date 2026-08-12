@@ -3,13 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pós - login</title>
+    <title>Pós - login - AAPM</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Olá, {{ usuario.nome }}</h1>
-    <p>Perfil: {{ usuario.role }}</p>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
 
-    <a href="/auth/logout">Sair</a>
+    <!-- Topbar / Navbar -->
+    <header class="w-full bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-red-600 text-white font-bold rounded-xl flex items-center justify-center text-lg shadow-sm">
+                    AAPM
+                </div>
+                <span class="font-bold text-slate-900 text-lg">Sistema AAPM</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <span class="text-sm font-medium text-slate-600">
+                    Olá, <strong class="text-slate-900">{{ usuario.nome if usuario else 'richard' }}</strong>
+                </span>
+                <a href="/auth/logout" class="px-3.5 py-1.5 text-sm font-semibold text-red-600 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 hover:border-red-600 rounded-lg transition-all duration-200">
+                    Sair
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 max-w-5xl w-full mx-auto px-6 py-8 space-y-6">
+        
+        <!-- Cartão de Boas-Vindas / Perfil -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                    Olá, {{ usuario.nome if usuario else 'richard' }}!
+                </h1>
+                <p class="text-slate-500 text-sm">
+                    Bem-vindo ao painel do sistema da AAPM.
+                </p>
+            </div>
+
+            <!-- Badge do Perfil -->
+            
+        
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="w-full bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+        &copy; 2026 Associação de Pais e Mestres
+    </footer>
 
 </body>
 </html>

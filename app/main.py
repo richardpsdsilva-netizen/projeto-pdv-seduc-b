@@ -9,6 +9,7 @@ from app.controllers import auth_controller
 from app.controllers import usuario_controller
 from app.controllers import categoria_controller
 from app.controllers import produto_controller
+from app.controllers import movimentacao_controller
 
 app = FastAPI(title="Sistema de Ponto de venda")
 
@@ -23,6 +24,7 @@ app.include_router(auth_controller.router)
 app.include_router(usuario_controller.router)
 app.include_router(categoria_controller.router)
 app.include_router(produto_controller.router)
+app.include_router(movimentacao_controller.router)
 
 @app.get("/")
 def tela_inicial(

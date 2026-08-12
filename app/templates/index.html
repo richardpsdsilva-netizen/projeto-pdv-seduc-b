@@ -4,14 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bem-vindo - AAPM</title>
+    <!-- Tailwind CSS via CDN para estilização -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-red-50/50 min-h-screen flex flex-col items-center justify-center p-4 font-sans text-slate-800">
 
-    <h1>Sistema da AAPM</h1>
-    <p>Faça login para acessar o sistema</p>
-    
-    <a href="/auth/login"> Entrar </a>
-    <br><br>
-    <a href="/auth/cadastro"> Criar conta </a>
+    <main class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-red-100 p-8 text-center space-y-6">
+        
+        <!-- Cabeçalho -->
+        <div class="space-y-2">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-red-600 text-white font-bold text-2xl rounded-2xl shadow-md mb-2">
+                AAPM
+            </div>
+            <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Sistema da AAPM</h1>
+            <p class="text-sm text-slate-500">Faça login para acessar o sistema</p>
+        </div>
+
+        <!-- Links / Ações -->
+        <div class="space-y-3 pt-2">
+            <a href="/auth/login" class="block w-full py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200">
+                Entrar
+            </a>
+            
+            <a href="/auth/cadastro" class="block w-full py-3 px-4 bg-white hover:bg-red-50 text-red-600 font-semibold border border-red-200 rounded-xl transition-all duration-200">
+                Criar conta
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Rodapé simples -->
+    <footer class="mt-8 text-xs text-slate-400">
+        &copy; 2026 Associação de Pais e Mestres
+    </footer>
+
 </body>
 </html>
