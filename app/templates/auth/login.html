@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    
+    <h1>Entrar no Sistema</h1>
+    <!-- Exibe mensagem de erro se existir -->
+    {% if erro %}
+        <p style="color: red;">{{ erro }}</p>
+    {% endif %}
+
+    <!-- Exibe mensagem de confirmação após cadastro -->
+    {% if request.query_params.get("cadastro") == "ok" %}
+        <p style="color: green;">Cadastro realizado! faça login.</p>
+    {% endif %}    
+    
+    <form action="/auth/login" method="post">
+        Email: <input type="email" name="email" required>
+        <br><br>
+        Senha: <input type="password" name="senha">
+        <br><br>
+        <button type="submit">Entrar</button>
+    </form>
+
+    <p>Não tem conta? <a href="/auth/cadastro">Cadastre-se</a></p>
+
+</body>
+</html>
