@@ -1,63 +1,150 @@
+<!-- templates/usuarios/index.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Usuários — Estoque</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários — AAPM SENAI</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Usuários</h1>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
 
-    <a href="/usuarios/novo">+ Novo usuário</a>
+    <!-- Header / Navbar -->
+    <header class="w-full bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="px-3.5 py-1.5 bg-red-600 text-white font-bold text-sm rounded-xl shadow-sm tracking-wider flex items-center justify-center">
+                    AAPM
+                </div>
+                <span class="font-bold text-slate-900 text-base">Sistema de Estoque</span>
+            </div>
+            <a href="/" class="text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors">
+                ← Voltar ao home
+            </a>
+        </div>
+    </header>
 
-    <!-- Mensagens de feedback via query string -->
-    {% if request.query_params.get('criado') == 'ok' %}
-        <p style="color: green;">Usuário criado com sucesso!</p>
-    {% endif %}
-    {% if request.query_params.get('editado') == 'ok' %}
-        <p style="color: green;">Usuário atualizado com sucesso!</p>
-    {% endif %}
-    {% if request.query_params.get('erro') == 'autoproprio' %}
-        <p style="color: red;">Você não pode desativar sua própria conta.</p>
-    {% endif %}
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-8 space-y-6">
 
-    <table border="1" cellpadding="8">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>Perfil</th>
-                <th>Status</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for u in usuarios %}
-            <tr>
-                <td>{{ u.nome }}</td>
-                <td>{{ u.email }}</td>
-                <td>{{ u.role }}</td>
-                <td>{{ "Ativo" if u.ativo else "Inativo" }}</td>
-                <td>
-                    <a href="/usuarios/{{ u.id }}/editar">Editar</a>
+        <!-- Mensagens de feedback via query string -->
+        {% if request.query_params.get('criado') == 'ok' %}
+            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
+                <span>✓</span> Usuário criado com sucesso!
+            </div>
+        {% endif %}
 
-                    <!--
-                        Usamos um form com POST para ações destrutivas.
-                        Links GET podem ser acionados acidentalmente
-                        (pré-fetch do browser, bots, etc.)
-                    -->
-                    <form action="/usuarios/{{ u.id }}/toggle-ativo"
-                          method="post"
-                          style="display:inline">
-                        <button type="submit">
-                            {{ "Desativar" if u.ativo else "Ativar" }}
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        {% if request.query_params.get('editado') == 'ok' %}
+            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
+                <span>✓</span> Usuário atualizado com sucesso!
+            </div>
+        {% endif %}
 
-    <p><a href="/">← Voltar ao home</a></p>
+        {% if request.query_params.get('erro') == 'autoproprio' %}
+            <div class="p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
+                <span>⚠️</span> Você não pode desativar sua própria conta.
+            </div>
+        {% endif %}
+
+        <!-- Cabeçalho da Seção e Ação Principal -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Usuários</h1>
+                <p class="text-slate-500 text-sm mt-1">Gerencie os acessos e permissões dos usuários do sistema.</p>
+            </div>
+
+            <a href="/usuarios/novo" 
+               class="inline-flex items-center justify-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-200">
+                + Novo usuário
+            </a>
+        </div>
+
+        <!-- Tabela de Usuários -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 uppercase font-semibold text-xs tracking-wider">
+                        <tr>
+                            <th class="px-6 py-4">Nome</th>
+                            <th class="px-6 py-4">E-mail</th>
+                            <th class="px-6 py-4">Perfil</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4 text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        {% for u in usuarios %}
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <!-- Nome -->
+                            <td class="px-6 py-4 font-semibold text-slate-900 whitespace-nowrap">
+                                {{ u.nome }}
+                            </td>
+
+                            <!-- E-mail -->
+                            <td class="px-6 py-4 text-slate-600 whitespace-nowrap">
+                                {{ u.email }}
+                            </td>
+
+                            <!-- Perfil (Role) Badge -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold capitalize
+                                    {{ 'bg-red-50 text-red-700 border border-red-100' if u.role == 'admin' else 'bg-slate-100 text-slate-700 border border-slate-200' }}">
+                                    {{ u.role }}
+                                </span>
+                            </td>
+
+                            <!-- Status Badge -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold
+                                    {{ 'bg-emerald-50 text-emerald-700 border border-emerald-200' if u.ativo else 'bg-slate-100 text-slate-500 border border-slate-200' }}">
+                                    <span class="w-1.5 h-1.5 rounded-full {{ 'bg-emerald-500' if u.ativo else 'bg-slate-400' }}"></span>
+                                    {{ "Ativo" if u.ativo else "Inativo" }}
+                                </span>
+                            </td>
+
+                            <!-- Ações -->
+                            <td class="px-6 py-4 text-right whitespace-nowrap">
+                                <div class="inline-flex items-center justify-end gap-2">
+                                    <a href="/usuarios/{{ u.id }}/editar" 
+                                       class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs rounded-lg transition-colors">
+                                        Editar
+                                    </a>
+
+                                    <form action="/usuarios/{{ u.id }}/toggle-ativo"
+                                          method="post"
+                                          class="inline">
+                                        <button type="submit" 
+                                                class="px-3 py-1.5 font-medium text-xs rounded-lg transition-colors border
+                                                    {{ 'bg-amber-50 hover:bg-amber-100 text-amber-700 border-amber-200' if u.ativo else 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200' }}">
+                                            {{ "Desativar" if u.ativo else "Ativar" }}
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        {% if not usuarios %}
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-slate-400">
+                                Nenhum usuário encontrado.
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Link Voltar -->
+        <div class="pt-2">
+            <a href="/" class="text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors">
+                ← Voltar ao home
+            </a>
+        </div>
+
+    </main>
+
 </body>
 </html>

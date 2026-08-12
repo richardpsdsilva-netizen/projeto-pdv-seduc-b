@@ -3,46 +3,117 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ produto.nome }} — AAPM SENAI</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    {% if request.query_params.get('editado') == 'ok' %}
-        <p style="color:green">Produto atualizado com sucesso!</p>
-    {% endif %}
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
 
-    <img src="{{ produto.imagem_url }}"
-         alt="{{ produto.nome }}"
-         width="200"
-         style="object-fit:cover">
+    <!-- Header / Navbar -->
+    <header class="w-full bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="px-3.5 py-1.5 bg-red-600 text-white font-bold text-sm rounded-xl shadow-sm tracking-wider flex items-center justify-center">
+                    AAPM
+                </div>
+                <span class="font-bold text-slate-900 text-base">Sistema de Estoque</span>
+          
+    </header>
 
-    <h1>{{ produto.nome }}</h1>
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-6 py-8 space-y-6">
 
-    <p>Categoria: {{ produto.categoria.nome if produto.categoria else "—" }}</p>
+        <!-- Mensagens de Alerta (Sucesso) -->
+        {% if request.query_params.get('editado') == 'ok' %}
+            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
+                <span>✓</span> Produto atualizado com sucesso!
+            </div>
+        {% endif %}
 
-    <table border="1" cellpadding="8">
-        <tr><td><strong>Preço</strong></td>
-            <td>R$ {{ "%.2f"|format(produto.preco) }}</td></tr>
-        <tr><td><strong>Estoque atual</strong></td>
-            <td>{{ produto.estoque_atual }}</td></tr>
-    </table>
+        {% if request.query_params.get('movimentacao') == 'ok' %}
+            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
+                <span>✓</span> Movimentação registrada com sucesso!
+            </div>
+        {% endif %}
 
-    {% if request.query_params.get('movimentacao') == 'ok' %}
-        <p style="color:green">Movimentação registrada com sucesso!</p>
-    {% endif %}
+        <!-- Card Principal do Produto -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 p-6 md:p-8 items-start">
+                
+                <!-- Imagem do Produto -->
+                <div class="md:col-span-5 flex justify-center">
+                    <div class="w-full aspect-square max-w-xs bg-slate-100 rounded-2xl overflow-hidden border border-slate-200/60 shadow-inner flex items-center justify-center relative">
+                        {% if produto.imagem_url %}
+                            <img src="{{ produto.imagem_url }}"
+                                 alt="{{ produto.nome }}"
+                                 class="w-full h-full object-cover">
+                        {% else %}
+                            <div class="text-slate-400 text-xs font-medium">Sem imagem</div>
+                        {% endif %}
+                    </div>
+                </div>
 
-    <!-- Links de movimentação -->
-    <a href="/movimentacoes/nova?produto_id={{ produto.id }}">
-        + Registrar movimentação
-    </a>
-    &nbsp;|&nbsp;
-    <a href="/movimentacoes/produto/{{ produto.id }}">
-        Ver histórico completo
-    </a>
+                <!-- Informações e Detalhes -->
+                <div class="md:col-span-7 flex flex-col justify-between space-y-6">
+                    <div>
+                        <!-- Categoria Badge -->
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-100 mb-3">
+                            {{ produto.categoria.nome if produto.categoria else "—" }}
+                        </span>
 
-    {% if usuario.role == 'admin' %}
-        <a href="/produtos/{{ produto.id }}/editar">Editar</a>
-    {% endif %}
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                            {{ produto.nome }}
+                        </h1>
+                    </div>
 
-    <a href="/produtos">← Voltar</a>
+                    <!-- Cards Estatísticos -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Preço</span>
+                            <p class="text-xl sm:text-2xl font-extrabold text-slate-900">
+                                R$ {{ "%.2f"|format(produto.preco) }}
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Estoque atual</span>
+                            <p class="text-xl sm:text-2xl font-extrabold text-slate-900">
+                                {{ produto.estoque_atual }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação Principais -->
+                    <div class="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-100">
+                        <a href="/movimentacoes/nova?produto_id={{ produto.id }}" 
+                           class="flex-1 min-w-[180px] inline-flex items-center justify-center px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-200">
+                            + Registrar movimentação
+                        </a>
+                        <a href="/movimentacoes/produto/{{ produto.id }}" 
+                           class="flex-1 min-w-[180px] inline-flex items-center justify-center px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm rounded-xl transition-all duration-200">
+                            Ver histórico completo
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Ações do Administrador e Navegação Secundária -->
+        <div class="flex items-center justify-between pt-2">
+            <a href="/produtos" class="text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors">
+                ← Voltar
+            </a>
+
+            {% if usuario.role == 'admin' %}
+                <a href="/produtos/{{ produto.id }}/editar" 
+                   class="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 font-medium text-sm rounded-xl shadow-sm transition-all">
+                    ✏️ Editar produto
+                </a>
+            {% endif %}
+        </div>
+
+    </main>
+
 </body>
 </html>
