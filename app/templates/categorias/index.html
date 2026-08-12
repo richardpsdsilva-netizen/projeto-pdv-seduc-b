@@ -3,77 +3,136 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Categorias — AAPM SENAI</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Categorias</h1>
+<body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
 
-    {% if request.query_params.get('criado') == 'ok' %}
-        <p style="color:green">Categoria criada com sucesso!</p>
-    {% endif %}
+    <!-- Header / Navbar -->
+    <header class="w-full bg-white border-b border-slate-200 shadow-sm">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="px-3.5 py-1.5 bg-red-600 text-white font-bold text-sm rounded-xl shadow-sm tracking-wider flex items-center justify-center">
+                    AAPM
+                </div>
+                <span class="font-bold text-slate-900 text-base">Sistema de Estoque</span>
+    </header>
 
-    {% if request.query_params.get('editado') == 'ok' %}
-        <p style="color:green">Categoria atualizada com sucesso!</p>
-    {% endif %}
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-8 space-y-6">
 
-    {% if request.query_params.get('erro') == 'produtos_vinculados' %}
-        <p style="color:red">
-            Não é possível desativar "{{ request.query_params.get('categoria') }}"
-            pois ela possui produtos ativos vinculados.
-            Desative ou mova os produtos antes.
-        </p>
-    {% endif %}
+        <!-- Mensagens de Alerta (Sucesso / Erro) -->
+        {% if request.query_params.get('criado') == 'ok' %}
+            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
+                <span>✓</span> Categoria criada com sucesso!
+            </div>
+        {% endif %}
 
-    <a href="/categorias/nova">+ Nova categoria</a>
+        {% if request.query_params.get('editado') == 'ok' %}
+            <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
+                <span>✓</span> Categoria atualizada com sucesso!
+            </div>
+        {% endif %}
 
-    <table border="1" cellpadding="8">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>Produtos ativos</th>
-                <th>Status</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for c in categorias %}
-            <tr>
-                <td>{{ c.nome }}</td>
+        {% if request.query_params.get('erro') == 'produtos_vinculados' %}
+            <div class="p-4 bg-red-50 border border-red-200 text-red-700 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
+                <span>⚠️</span> Não é possível desativar "{{ request.query_params.get('categoria') }}" pois ela possui produtos ativos vinculados. Desative ou mova os produtos antes.
+            </div>
+        {% endif %}
 
-                <!--
-                    c.produtos vem do relationship definido no model.
-                    Filtramos em Python para contar apenas os ativos.
-                -->
-                <td>
-                    {{ c.produtos | selectattr('ativo') | list | length }}
-                </td>
+        <!-- Cabeçalho da Seção -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Categorias</h1>
+                <p class="text-slate-500 text-sm mt-1">Gerencie os agrupamentos de produtos do estoque.</p>
+            </div>
 
-                <td>{{ "Ativa" if c.ativo else "Inativa" }}</td>
+            <a href="/categorias/nova" 
+               class="inline-flex items-center justify-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-200">
+                + Nova categoria
+            </a>
+        </div>
 
-                <td>
-                    <a href="/categorias/{{ c.id }}/editar">Editar</a>
+        <!-- Tabela de Categorias -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 uppercase font-semibold text-xs tracking-wider">
+                        <tr>
+                            <th class="px-6 py-4">Nome</th>
+                            <th class="px-6 py-4">Produtos ativos</th>
+                            <th class="px-6 py-4">Status</th>
+                            <th class="px-6 py-4 text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        {% for c in categorias %}
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <!-- Nome -->
+                            <td class="px-6 py-4 font-semibold text-slate-900 whitespace-nowrap">
+                                {{ c.nome }}
+                            </td>
 
-                    <form action="/categorias/{{ c.id }}/toggle-ativo"
-                          method="post"
-                          style="display:inline">
-                        <button type="submit">
-                            {{ "Desativar" if c.ativo else "Ativar" }}
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
+                            <!-- Produtos Ativos -->
+                            <td class="px-6 py-4 text-slate-600 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                                    {{ c.produtos | selectattr('ativo') | list | length }} item(ns)
+                                </span>
+                            </td>
 
-            {% if not categorias %}
-            <tr>
-                <td colspan="4" style="text-align:center">
-                    Nenhuma categoria cadastrada.
-                </td>
-            </tr>
-            {% endif %}
-        </tbody>
-    </table>
+                            <!-- Status Badge -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold
+                                    {{ 'bg-emerald-50 text-emerald-700 border border-emerald-200' if c.ativo else 'bg-slate-100 text-slate-500 border border-slate-200' }}">
+                                    <span class="w-1.5 h-1.5 rounded-full {{ 'bg-emerald-500' if c.ativo else 'bg-slate-400' }}"></span>
+                                    {{ "Ativa" if c.ativo else "Inativa" }}
+                                </span>
+                            </td>
 
-    <p><a href="/">← Dashboard</a></p>
+                            <!-- Ações -->
+                            <td class="px-6 py-4 text-right whitespace-nowrap">
+                                <div class="inline-flex items-center justify-end gap-2">
+                                    <a href="/categorias/{{ c.id }}/editar" 
+                                       class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs rounded-lg transition-colors">
+                                        Editar
+                                    </a>
+
+                                    <form action="/categorias/{{ c.id }}/toggle-ativo"
+                                          method="post"
+                                          class="inline">
+                                        <button type="submit" 
+                                                class="px-3 py-1.5 font-medium text-xs rounded-lg transition-colors border
+                                                    {{ 'bg-amber-50 hover:bg-amber-100 text-amber-700 border-amber-200' if c.ativo else 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200' }}">
+                                            {{ "Desativar" if c.ativo else "Ativar" }}
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                        {% if not categorias %}
+                        <tr>
+                            <td colspan="4" class="px-6 py-12 text-center text-slate-400">
+                                Nenhuma categoria cadastrada.
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Link Voltar -->
+        <div class="pt-2">
+            <a href="/" class="text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors">
+                ← Dashboard
+            </a>
+        </div>
+
+    </main>
+
 </body>
 </html>
