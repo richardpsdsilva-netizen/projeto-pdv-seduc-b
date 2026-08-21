@@ -1,0 +1,46 @@
+<!-- templates/pdv/historico.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head><meta charset="UTF-8"><title>Histórico de Vendas — AAPM SENAI</title></head>
+<body>
+    <h1>Histórico de vendas</h1>
+    <a href="/pdv">← Voltar ao PDV</a>
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Data</th>
+                <th>Cliente</th>
+                <th>Itens</th>
+                <th>Desconto</th>
+                <th>Total</th>
+                <th>Operador</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for v in vendas %}
+            <tr>
+                <td><a href="/pdv/venda/{{ v.id }}">#{{ v.id }}</a></td>
+                <td>{{ v.criado_em.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>{{ v.cliente.nome if v.cliente else "Balcão" }}</td>
+                <td>{{ v.itens | length }}</td>
+                <td>
+                    {% if v.desconto_percentual > 0 %}
+                        <span style="color:green">
+                            {{ v.desconto_percentual|int }}%
+                            (− R$ {{ "%.2f"|format(v.desconto_valor) }})
+                        </span>
+                    {% else %}—{% endif %}
+                </td>
+                <td>R$ {{ "%.2f"|format(v.total_liquido) }}</td>
+                <td>{{ v.usuario.nome if v.usuario else "—" }}</td>
+            </tr>
+            {% endfor %}
+            {% if not vendas %}
+            <tr><td colspan="7" style="text-align:center">Nenhuma venda.</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+</body>
+</html>

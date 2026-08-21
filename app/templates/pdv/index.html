@@ -1,0 +1,406 @@
+<!-- templates/pdv/index.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDV — AAPM SENAI</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ── Container do Fundo Animado (Cubos) ── */
+        .cubes-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            margin: 0;
+            padding: 0;
+            pointer-events: none;
+        }
+
+        .cubes-bg li {
+            position: absolute;
+            list-style: none;
+            display: block;
+            width: 20px;
+            height: 20px;
+            background: rgba(220, 38, 38, 0.12); /* Vermelho translúcido AAPM */
+            border: 1px solid rgba(220, 38, 38, 0.25);
+            border-radius: 12px;
+            bottom: -150px;
+            animation: moveCubes 12s infinite ease-in-out;
+        }
+
+        @keyframes moveCubes {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-50vh) rotate(180deg);
+            }
+            70% {
+                transform: translateY(-35vh) rotate(240deg);
+            }
+            100% {
+                transform: translateY(-105vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Delays negativos para animação fluida imediata */
+        .cubes-bg li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: -2s; animation-duration: 14s; }
+        .cubes-bg li:nth-child(2) { left: 10%; width: 30px; height: 30px; animation-delay: -5s; animation-duration: 10s; }
+        .cubes-bg li:nth-child(3) { left: 70%; width: 45px; height: 45px; animation-delay: -8s; animation-duration: 12s; }
+        .cubes-bg li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: -12s; animation-duration: 18s; }
+        .cubes-bg li:nth-child(5) { left: 65%; width: 25px; height: 25px; animation-delay: -3s; animation-duration: 9s;  }
+        .cubes-bg li:nth-child(6) { left: 85%; width: 90px; height: 90px; animation-delay: -9s; animation-duration: 15s; }
+        .cubes-bg li:nth-child(7) { left: 55%; width: 50px; height: 50px; animation-delay: -6s; animation-duration: 13s; }
+        .cubes-bg li:nth-child(8) { left: 15%; width: 20px; height: 20px; animation-delay: -1s; animation-duration: 11s; }
+        .cubes-bg li:nth-child(9) { left: 3%;  width: 40px; height: 40px; animation-delay: -7s; animation-duration: 16s; }
+        .cubes-bg li:nth-child(10){ left: 92%; width: 70px; height: 70px; animation-delay: -11s; animation-duration: 14s; }
+    </style>
+</head>
+<body class="bg-red-50/40 min-h-screen flex flex-col font-sans text-slate-800 antialiased relative overflow-x-hidden">
+
+    <!-- ── Fundo Animado com Cubos ── -->
+    <ul class="cubes-bg">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+
+    <!-- Header / Navbar -->
+    <header class="w-full bg-white/85 backdrop-blur-md border-b border-red-200/60 shadow-sm sticky top-0 z-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="px-3 py-1 bg-red-600 text-white font-bold text-sm rounded-xl shadow-sm tracking-wider flex items-center justify-center">
+                    AAPM
+                </div>
+                <span class="font-bold text-slate-900 text-base sm:text-lg">PDV — Ponto de Venda</span>
+            </div>
+            
+            <nav class="flex items-center space-x-2 sm:space-x-4 text-xs sm:text-sm font-semibold">
+                <a href="/pdv/historico" class="px-3 py-2 text-slate-600 hover:text-red-600 hover:bg-red-50/50 rounded-xl transition-all">Histórico de Vendas</a>
+                <a href="/clientes" class="px-3 py-2 text-slate-600 hover:text-red-600 hover:bg-red-50/50 rounded-xl transition-all">Clientes</a>
+                <a href="/dashboard" class="px-3 py-2 bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 rounded-xl transition-all">← Dashboard</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Alertas de Erro (URL Params) -->
+    {% set erro = request.query_params.get('erro') %}
+    {% if erro %}
+        <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 pt-4 z-10 relative">
+            <div class="p-4 bg-red-100/80 backdrop-blur-sm border border-red-200 text-red-700 text-sm font-semibold rounded-2xl shadow-sm flex items-center justify-between">
+                <div>
+                    ⚠️ 
+                    {% if erro == 'vazio' %}Carrinho vazio. Adicione produtos antes de finalizar.
+                    {% elif erro == 'estoque' %}Estoque insuficiente para: <strong>{{ request.query_params.get('produto') }}</strong>
+                    {% elif erro == 'quantidade' %}Quantidade inválida informada.
+                    {% else %}Ocorreu um erro ao processar a venda. Tente novamente.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Área Principal em Duas Colunas -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start z-10 relative">
+
+        <!-- COLUNA ESQUERDA — Buscador e Grade de Produtos (Col-8) -->
+        <section class="lg:col-span-7 xl:col-span-8 space-y-4">
+            
+            <!-- Campo de Busca -->
+            <div class="relative">
+                <input type="text"
+                       id="busca-produto"
+                       oninput="filtrarProdutos()"
+                       placeholder="🔍 Buscar produto pelo nome..."
+                       autocomplete="off"
+                       class="w-full pl-4 pr-4 py-3 bg-white/90 backdrop-blur-md border border-red-200/80 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all text-sm font-medium">
+            </div>
+
+            <!-- Grade de Card dos Produtos -->
+            <div id="grade-produtos" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+                {% for p in produtos %}
+                <div class="card-produto bg-white/90 backdrop-blur-md rounded-2xl border border-red-200/60 shadow-sm hover:shadow-md hover:border-red-300 transition-all cursor-pointer overflow-hidden flex flex-col justify-between group p-3 relative {{ 'opacity-50 pointer-events-none bg-slate-50' if p.estoque_atual == 0 else '' }}"
+                     data-id="{{ p.id }}"
+                     data-nome="{{ p.nome }}"
+                     data-preco="{{ p.preco }}"
+                     data-estoque="{{ p.estoque_atual }}"
+                     data-nome-lower="{{ p.nome.lower() }}"
+                     onclick="adicionarAoCarrinho(this)">
+
+                    {% if p.estoque_atual == 0 %}
+                        <span class="absolute top-2 right-2 bg-slate-800 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md z-10">Esgotado</span>
+                    {% endif %}
+
+                    <!-- Container Imagem 1:1 -->
+                    <div class="w-full aspect-square bg-slate-50/80 rounded-xl overflow-hidden mb-3 flex items-center justify-center p-2 border border-slate-100">
+                        {% if p.imagem_url %}
+                            <img src="{{ p.imagem_url }}" alt="{{ p.nome }}" class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-200">
+                        {% else %}
+                            <span class="text-3xl">📦</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Dados do Produto -->
+                    <div class="space-y-1">
+                        <h3 class="font-bold text-slate-800 text-sm line-clamp-1 group-hover:text-red-600 transition-colors">{{ p.nome }}</h3>
+                        <div class="flex items-center justify-between text-xs pt-1">
+                            <span class="font-extrabold text-red-600 text-sm">R$ {{ "%.2f"|format(p.preco) }}</span>
+                            <span class="text-slate-500 font-medium">Qtd: <strong class="text-slate-700">{{ p.estoque_atual }}</strong></span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- COLUNA DIREITA — Carrinho de Compras (Col-4) -->
+        <aside class="lg:col-span-5 xl:col-span-4 bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-red-200/60 p-5 space-y-5 sticky top-20">
+
+            <div class="flex items-center justify-between border-b border-red-100 pb-3">
+                <h2 class="font-extrabold text-slate-900 text-lg flex items-center gap-2">
+                    <span>🛒</span> Carrinho de Compras
+                </h2>
+                <span id="contador-itens" class="text-xs bg-red-50 text-red-600 font-bold px-2.5 py-1 rounded-full border border-red-100">0 itens</span>
+            </div>
+
+            <!-- Seleção do Cliente -->
+            <div class="space-y-2">
+                <label for="select-cliente" class="block text-xs font-bold uppercase tracking-wider text-slate-400">Cliente</label>
+                <select id="select-cliente" onchange="atualizarCliente(this)"
+                        class="w-full px-3.5 py-2.5 bg-slate-50 border border-red-200/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all text-xs font-semibold text-slate-700">
+                    <option value="0" data-associado="false">
+                        Sem identificação (sem desconto)
+                    </option>
+                    {% for c in clientes %}
+                    <option value="{{ c.id }}" data-associado="{{ 'true' if c.is_associado else 'false' }}">
+                        {{ c.nome }} {% if c.matricula %}({{ c.matricula }}){% endif %} {% if c.is_associado %} — ASSOCIADO{% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+
+                <div id="badge-desconto" class="hidden p-2 bg-emerald-50 border border-emerald-200 text-emerald-700 font-semibold text-xs rounded-xl flex items-center gap-1.5">
+                    <span>✓</span> {{ desconto_associado|int if desconto_associado else 10 }}% de desconto aplicado (Associado)
+                </div>
+            </div>
+
+            <!-- Lista de Itens Adicionados -->
+            <div id="lista-carrinho" class="min-h-[160px] max-h-[280px] overflow-y-auto space-y-2 pr-1 divide-y divide-slate-100">
+                <div id="msg-vazio" class="py-12 flex flex-col items-center justify-center text-slate-400 text-xs text-center space-y-2">
+                    <span class="text-3xl">🛒</span>
+                    <p>Clique nos produtos para adicionar ao carrinho</p>
+                </div>
+            </div>
+
+            <!-- Totais e Finalização -->
+            <div class="pt-3 border-t border-red-100 space-y-4">
+                <div id="totais" class="hidden space-y-2 text-sm">
+                    <div class="flex justify-between text-slate-500">
+                        <span>Subtotal</span>
+                        <span id="val-subtotal" class="font-semibold text-slate-700">R$ 0,00</span>
+                    </div>
+                    <div id="linha-desconto" class="hidden flex justify-between text-emerald-600 font-medium">
+                        <span id="label-desconto">Desconto</span>
+                        <span id="val-desconto">— R$ 0,00</span>
+                    </div>
+                    <div class="flex justify-between text-lg font-black text-slate-900 pt-2 border-t border-slate-100">
+                        <span>Total</span>
+                        <span id="val-total" class="text-red-600">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <textarea id="obs-input"
+                          rows="2"
+                          placeholder="Observação (opcional)..."
+                          class="w-full px-3.5 py-2 bg-slate-50 border border-red-200/80 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all text-xs resize-none"></textarea>
+
+                <form id="form-venda" action="/pdv/finalizar" method="post">
+                    <input type="hidden" name="carrinho_json" id="input-carrinho">
+                    <input type="hidden" name="cliente_id" id="input-cliente-id" value="0">
+                    <input type="hidden" name="observacao" id="input-obs">
+                    <button id="btn-finalizar"
+                            type="button"
+                            disabled
+                            onclick="finalizarVenda()"
+                            class="w-full py-3 px-4 bg-red-600 hover:bg-red-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold rounded-xl shadow-md transition-all text-sm">
+                        Finalizar Venda
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+    </main>
+
+    <!-- Script com a Lógica do PDV -->
+    <script>
+        let carrinho = [];
+        let pctDesconto = {{ desconto_associado|default(10)|int }};
+        let clienteAssociado = false;
+
+        function filtrarProdutos() {
+            const termo = document.getElementById('busca-produto').value.toLowerCase();
+            const cards = document.querySelectorAll('.card-produto');
+            cards.forEach(card => {
+                const nome = card.getAttribute('data-nome-lower');
+                if (nome.includes(termo)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        function adicionarAoCarrinho(el) {
+            const id = el.getAttribute('data-id');
+            const nome = el.getAttribute('data-nome');
+            const preco = parseFloat(el.getAttribute('data-preco'));
+            const estoque = parseInt(el.getAttribute('data-estoque'));
+
+            const itemExistente = carrinho.find(item => item.id === id);
+
+            if (itemExistente) {
+                if (itemExistente.qtd + 1 > estoque) {
+                    alert('Estoque máximo atingido para este produto!');
+                    return;
+                }
+                itemExistente.qtd++;
+            } else {
+                carrinho.push({ id, nome, preco, qtd: 1, estoque });
+            }
+
+            renderizarCarrinho();
+        }
+
+        function alterarQtd(id, delta) {
+            const item = carrinho.find(i => i.id === id);
+            if (!item) return;
+
+            item.qtd += delta;
+
+            if (item.qtd > item.estoque) {
+                alert('Estoque insuficiente!');
+                item.qtd = item.estoque;
+            }
+
+            if (item.qtd <= 0) {
+                carrinho = carrinho.filter(i => i.id !== id);
+            }
+
+            renderizarCarrinho();
+        }
+
+        function atualizarCliente(select) {
+            const opt = select.options[select.selectedIndex];
+            clienteAssociado = opt.getAttribute('data-associado') === 'true';
+            document.getElementById('input-cliente-id').value = select.value;
+            
+            const badge = document.getElementById('badge-desconto');
+            if (clienteAssociado) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            renderizarCarrinho();
+        }
+
+        function renderizarCarrinho() {
+            const container = document.getElementById('lista-carrinho');
+            const divTotais = document.getElementById('totais');
+            const btnFinalizar = document.getElementById('btn-finalizar');
+            const contItens = document.getElementById('contador-itens');
+
+            if (carrinho.length === 0) {
+                container.innerHTML = `
+                    <div id="msg-vazio" class="py-12 flex flex-col items-center justify-center text-slate-400 text-xs text-center space-y-2">
+                        <span class="text-3xl">🛒</span>
+                        <p>Clique nos produtos para adicionar ao carrinho</p>
+                    </div>`;
+                divTotais.classList.add('hidden');
+                btnFinalizar.disabled = true;
+                contItens.innerText = '0 itens';
+                return;
+            }
+
+            let html = '';
+            let subtotal = 0;
+            let totalQtd = 0;
+
+            carrinho.forEach(item => {
+                const itemSubtotal = item.preco * item.qtd;
+                subtotal += itemSubtotal;
+                totalQtd += item.qtd;
+
+                html += `
+                <div class="py-2.5 flex items-center justify-between gap-2 text-xs">
+                    <div class="flex-1">
+                        <div class="font-bold text-slate-800 line-clamp-1">${item.nome}</div>
+                        <div class="text-slate-400">R$ ${item.preco.toFixed(2)} un.</div>
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-slate-100 rounded-lg p-1">
+                        <button type="button" onclick="alterarQtd('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center bg-white rounded shadow-sm font-bold text-slate-700 hover:bg-slate-200">-</button>
+                        <span class="font-bold px-1 text-slate-800">${item.qtd}</span>
+                        <button type="button" onclick="alterarQtd('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center bg-white rounded shadow-sm font-bold text-slate-700 hover:bg-slate-200">+</button>
+                    </div>
+                    <div class="font-bold text-slate-900 w-16 text-right">
+                        R$ ${itemSubtotal.toFixed(2)}
+                    </div>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+            contItens.innerText = `${totalQtd} item(ns)`;
+
+            // Cálculos
+            let valorDesconto = 0;
+            if (clienteAssociado) {
+                valorDesconto = subtotal * (pctDesconto / 100);
+            }
+            const total = subtotal - valorDesconto;
+
+            document.getElementById('val-subtotal').innerText = `R$ ${subtotal.toFixed(2)}`;
+            
+            const linhaDesconto = document.getElementById('linha-desconto');
+            if (clienteAssociado && valorDesconto > 0) {
+                linhaDesconto.classList.remove('hidden');
+                document.getElementById('label-desconto').innerText = `Desconto (${pctDesconto}%)`;
+                document.getElementById('val-desconto').innerText = `— R$ ${valorDesconto.toFixed(2)}`;
+            } else {
+                linhaDesconto.classList.add('hidden');
+            }
+
+            document.getElementById('val-total').innerText = `R$ ${total.toFixed(2)}`;
+            
+            divTotais.classList.remove('hidden');
+            btnFinalizar.disabled = false;
+        }
+
+        function finalizarVenda() {
+            if (carrinho.length === 0) return;
+
+            document.getElementById('input-carrinho').value = JSON.stringify(carrinho);
+            document.getElementById('input-obs').value = document.getElementById('obs-input').value;
+            document.getElementById('form-venda').submit();
+        }
+    </script>
+
+</body>
+</html>
