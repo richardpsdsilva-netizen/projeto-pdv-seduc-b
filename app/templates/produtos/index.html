@@ -1,6 +1,7 @@
 <!-- templates/produtos/index.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +18,8 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            z-index: 0; /* Fica no fundo */
+            z-index: 0;
+            /* Fica no fundo */
             margin: 0;
             padding: 0;
         }
@@ -29,9 +31,11 @@
             display: block;
             width: 20px;
             height: 20px;
-            background: rgba(220, 38, 38, 0.12); /* Vermelho translúcido */
+            background: rgba(220, 38, 38, 0.12);
+            /* Vermelho translúcido */
             border: 1px solid rgba(220, 38, 38, 0.25);
-            border-radius: 12px; /* Cantos arredondados */
+            border-radius: 12px;
+            /* Cantos arredondados */
             bottom: -150px;
             animation: moveCubes 22s infinite ease-in-out;
         }
@@ -42,15 +46,19 @@
                 transform: translateY(0) rotate(0deg);
                 opacity: 0;
             }
+
             20% {
                 opacity: 0.8;
             }
+
             50% {
                 transform: translateY(-50vh) rotate(180deg);
             }
+
             70% {
                 transform: translateY(-35vh) rotate(240deg);
             }
+
             100% {
                 transform: translateY(-105vh) rotate(360deg);
                 opacity: 0;
@@ -58,24 +66,136 @@
         }
 
         /* Distribuição dos 16 cubos com posições e tempos variados */
-        .cubes-bg li:nth-child(1)  { left: 25%; width: 80px; height: 80px; animation-delay: -2s;  animation-duration: 26s; }
-        .cubes-bg li:nth-child(2)  { left: 10%; width: 30px; height: 30px; animation-delay: -7s;  animation-duration: 20s; }
-        .cubes-bg li:nth-child(3)  { left: 70%; width: 45px; height: 45px; animation-delay: -12s; animation-duration: 22s; }
-        .cubes-bg li:nth-child(4)  { left: 40%; width: 60px; height: 60px; animation-delay: -5s;  animation-duration: 30s; }
-        .cubes-bg li:nth-child(5)  { left: 65%; width: 25px; height: 25px; animation-delay: -15s; animation-duration: 18s; }
-        .cubes-bg li:nth-child(6)  { left: 85%; width: 90px; height: 90px; animation-delay: -8s;  animation-duration: 28s; }
-        .cubes-bg li:nth-child(7)  { left: 55%; width: 50px; height: 50px; animation-delay: -18s; animation-duration: 24s; }
-        .cubes-bg li:nth-child(8)  { left: 15%; width: 20px; height: 20px; animation-delay: -3s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(9)  { left: 3%;  width: 40px; height: 40px; animation-delay: -10s; animation-duration: 32s; }
-        .cubes-bg li:nth-child(10) { left: 92%; width: 70px; height: 70px; animation-delay: -14s; animation-duration: 25s; }
-        .cubes-bg li:nth-child(11) { left: 32%; width: 35px; height: 35px; animation-delay: -9s;  animation-duration: 23s; }
-        .cubes-bg li:nth-child(12) { left: 48%; width: 75px; height: 75px; animation-delay: -16s; animation-duration: 27s; }
-        .cubes-bg li:nth-child(13) { left: 78%; width: 20px; height: 20px; animation-delay: -4s;  animation-duration: 19s; }
-        .cubes-bg li:nth-child(14) { left: 20%; width: 55px; height: 55px; animation-delay: -11s; animation-duration: 29s; }
-        .cubes-bg li:nth-child(15) { left: 80%; width: 40px; height: 40px; animation-delay: -1s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(16) { left: 60%; width: 30px; height: 30px; animation-delay: -13s; animation-duration: 25s; }
+        .cubes-bg li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: -2s;
+            animation-duration: 26s;
+        }
+
+        .cubes-bg li:nth-child(2) {
+            left: 10%;
+            width: 30px;
+            height: 30px;
+            animation-delay: -7s;
+            animation-duration: 20s;
+        }
+
+        .cubes-bg li:nth-child(3) {
+            left: 70%;
+            width: 45px;
+            height: 45px;
+            animation-delay: -12s;
+            animation-duration: 22s;
+        }
+
+        .cubes-bg li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: -5s;
+            animation-duration: 30s;
+        }
+
+        .cubes-bg li:nth-child(5) {
+            left: 65%;
+            width: 25px;
+            height: 25px;
+            animation-delay: -15s;
+            animation-duration: 18s;
+        }
+
+        .cubes-bg li:nth-child(6) {
+            left: 85%;
+            width: 90px;
+            height: 90px;
+            animation-delay: -8s;
+            animation-duration: 28s;
+        }
+
+        .cubes-bg li:nth-child(7) {
+            left: 55%;
+            width: 50px;
+            height: 50px;
+            animation-delay: -18s;
+            animation-duration: 24s;
+        }
+
+        .cubes-bg li:nth-child(8) {
+            left: 15%;
+            width: 20px;
+            height: 20px;
+            animation-delay: -3s;
+            animation-duration: 21s;
+        }
+
+        .cubes-bg li:nth-child(9) {
+            left: 3%;
+            width: 40px;
+            height: 40px;
+            animation-delay: -10s;
+            animation-duration: 32s;
+        }
+
+        .cubes-bg li:nth-child(10) {
+            left: 92%;
+            width: 70px;
+            height: 70px;
+            animation-delay: -14s;
+            animation-duration: 25s;
+        }
+
+        .cubes-bg li:nth-child(11) {
+            left: 32%;
+            width: 35px;
+            height: 35px;
+            animation-delay: -9s;
+            animation-duration: 23s;
+        }
+
+        .cubes-bg li:nth-child(12) {
+            left: 48%;
+            width: 75px;
+            height: 75px;
+            animation-delay: -16s;
+            animation-duration: 27s;
+        }
+
+        .cubes-bg li:nth-child(13) {
+            left: 78%;
+            width: 20px;
+            height: 20px;
+            animation-delay: -4s;
+            animation-duration: 19s;
+        }
+
+        .cubes-bg li:nth-child(14) {
+            left: 20%;
+            width: 55px;
+            height: 55px;
+            animation-delay: -11s;
+            animation-duration: 29s;
+        }
+
+        .cubes-bg li:nth-child(15) {
+            left: 80%;
+            width: 40px;
+            height: 40px;
+            animation-delay: -1s;
+            animation-duration: 21s;
+        }
+
+        .cubes-bg li:nth-child(16) {
+            left: 60%;
+            width: 30px;
+            height: 30px;
+            animation-delay: -13s;
+            animation-duration: 25s;
+        }
     </style>
 </head>
+
 <body class="bg-red-50/40 min-h-screen flex flex-col font-sans text-slate-800 relative">
 
     <!-- Fundo Animado com 16 Cubos -->
@@ -102,7 +222,8 @@
     <header class="w-full bg-white/90 backdrop-blur-md border-b border-red-100/80 shadow-sm z-10">
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="px-3.5 py-1.5 bg-red-600 text-white font-bold text-sm rounded-xl shadow-md tracking-wider flex items-center justify-center transform transition-transform duration-300 hover:scale-105">
+                <div
+                    class="px-3.5 py-1.5 bg-red-600 text-white font-bold text-sm rounded-xl shadow-md tracking-wider flex items-center justify-center transform transition-transform duration-300 hover:scale-105">
                     AAPM
                 </div>
                 <span class="font-bold text-slate-900 text-base">Sistema de Estoque</span>
@@ -115,15 +236,17 @@
 
         <!-- Notificações (Alertas) -->
         {% if request.query_params.get('criado') == 'ok' %}
-            <div class="p-4 bg-emerald-50/90 backdrop-blur-md border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
-                <span>✓</span> Produto criado com sucesso!
-            </div>
+        <div
+            class="p-4 bg-emerald-50/90 backdrop-blur-md border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
+            <span>✓</span> Produto criado com sucesso!
+        </div>
         {% endif %}
 
         {% if request.query_params.get('desativado') == 'ok' %}
-            <div class="p-4 bg-emerald-50/90 backdrop-blur-md border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
-                <span>✓</span> Produto desativado com sucesso.
-            </div>
+        <div
+            class="p-4 bg-emerald-50/90 backdrop-blur-md border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
+            <span>✓</span> Produto desativado com sucesso.
+        </div>
         {% endif %}
 
         <!-- Cabeçalho da Seção e Ação Principal -->
@@ -134,52 +257,48 @@
             </div>
 
             {% if usuario.role == 'admin' %}
-                <a href="/produtos/novo" 
-                   class="inline-flex items-center justify-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5">
-                    + Novo produto
-                </a>
+            <a href="/produtos/novo"
+                class="inline-flex items-center justify-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5">
+                + Novo produto
+            </a>
             {% endif %}
         </div>
 
         <!-- Barra de Filtros de Busca -->
         <div class="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-xl border border-red-100/80">
             <form method="get" action="/produtos" class="flex flex-wrap items-center gap-3">
-                
+
                 <!-- Campo de Pesquisa -->
                 <div class="flex-1 min-w-[200px]">
-                    <input type="text"
-                           name="busca"
-                           placeholder="Buscar por nome..."
-                           value="{{ busca }}"
-                           class="w-full px-4 py-2 bg-slate-50/80 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all">
+                    <input type="text" name="busca" placeholder="Buscar por nome..." value="{{ busca }}"
+                        class="w-full px-4 py-2 bg-slate-50/80 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all">
                 </div>
 
                 <!-- Select de Categoria -->
                 <div class="w-full sm:w-auto">
-                    <select name="categoria_id" 
-                            class="w-full px-4 py-2 bg-slate-50/80 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all">
+                    <select name="categoria_id"
+                        class="w-full px-4 py-2 bg-slate-50/80 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all">
                         <option value="0">Todas as categorias</option>
                         {% for c in categorias %}
-                            <option value="{{ c.id }}"
-                                {{ 'selected' if categoria_id == c.id else '' }}>
-                                {{ c.nome }}
-                            </option>
+                        <option value="{{ c.id }}" {{ 'selected' if categoria_id==c.id else '' }}>
+                            {{ c.nome }}
+                        </option>
                         {% endfor %}
                     </select>
                 </div>
 
                 <!-- Botão Filtrar -->
-                <button type="submit" 
-                        class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white font-medium text-sm rounded-xl transition-colors shadow-sm">
+                <button type="submit"
+                    class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white font-medium text-sm rounded-xl transition-colors shadow-sm">
                     Filtrar
                 </button>
 
                 <!-- Botão Limpar Filtros -->
                 {% if busca or categoria_id %}
-                    <a href="/produtos" 
-                       class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium text-sm rounded-xl transition-colors">
-                        Limpar
-                    </a>
+                <a href="/produtos"
+                    class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium text-sm rounded-xl transition-colors">
+                    Limpar
+                </a>
                 {% endif %}
             </form>
         </div>
@@ -188,7 +307,8 @@
         <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-red-100/80 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-sm text-slate-600">
-                    <thead class="bg-red-50/50 border-b border-red-100 text-slate-700 uppercase font-semibold text-xs tracking-wider">
+                    <thead
+                        class="bg-red-50/50 border-b border-red-100 text-slate-700 uppercase font-semibold text-xs tracking-wider">
                         <tr>
                             <th class="px-6 py-4">Imagem</th>
                             <th class="px-6 py-4">Nome</th>
@@ -203,13 +323,12 @@
                         <tr class="hover:bg-red-50/30 transition-colors">
                             <!-- Imagem -->
                             <td class="px-6 py-3">
-                                <div class="w-12 h-12 bg-slate-100/80 rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center shrink-0">
+                                <div
+                                    class="w-12 h-12 bg-slate-100/80 rounded-xl overflow-hidden border border-slate-200 flex items-center justify-center shrink-0">
                                     {% if p.imagem_url %}
-                                        <img src="{{ p.imagem_url }}"
-                                             alt="{{ p.nome }}"
-                                             class="w-full h-full object-cover">
+                                    <img src="{{ p.imagem_url }}" alt="{{ p.nome }}" class="w-full h-full object-cover">
                                     {% else %}
-                                        <span class="text-xs text-slate-400">s/ img</span>
+                                    <span class="text-xs text-slate-400">s/ img</span>
                                     {% endif %}
                                 </div>
                             </td>
@@ -239,24 +358,22 @@
                             <!-- Ações -->
                             <td class="px-6 py-4 text-right whitespace-nowrap">
                                 {% if usuario.role == 'admin' %}
-                                    <div class="inline-flex items-center justify-end gap-2">
-                                        <a href="/produtos/{{ p.id }}/editar" 
-                                           class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs rounded-lg transition-colors">
-                                            Editar
-                                        </a>
+                                <div class="inline-flex items-center justify-end gap-2">
+                                    <a href="/produtos/{{ p.id }}/editar"
+                                        class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs rounded-lg transition-colors">
+                                        Editar
+                                    </a>
 
-                                        <form action="/produtos/{{ p.id }}/desativar"
-                                              method="post"
-                                              class="inline"
-                                              onsubmit="return confirm('Desativar {{ p.nome }}?')">
-                                            <button type="submit" 
-                                                    class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 font-medium text-xs rounded-lg transition-colors border border-red-100">
-                                                Desativar
-                                            </button>
-                                        </form>
-                                    </div>
+                                    <form action="/produtos/{{ p.id }}/desativar" method="post" class="inline"
+                                        onsubmit="return confirm('Desativar {{ p.nome }}?')">
+                                        <button type="submit"
+                                            class="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 font-medium text-xs rounded-lg transition-colors border border-red-100">
+                                            Desativar
+                                        </button>
+                                    </form>
+                                </div>
                                 {% else %}
-                                    <span class="text-xs text-slate-400">—</span>
+                                <span class="text-xs text-slate-400">—</span>
                                 {% endif %}
                             </td>
                         </tr>
@@ -275,6 +392,19 @@
                         {% endif %}
                     </tbody>
                 </table>
+
+                <br><br>
+                {% if total_paginas > 1 %}
+                {% endif %}
+                
+
+
+
+
+
+        
+                <br><br>
+
             </div>
         </div>
 
@@ -288,9 +418,11 @@
     </main>
 
     <!-- Rodapé -->
-    <footer class="w-full bg-white/80 backdrop-blur-md border-t border-red-100/80 py-4 text-center text-xs text-slate-400 z-10 font-medium mt-auto">
+    <footer
+        class="w-full bg-white/80 backdrop-blur-md border-t border-red-100/80 py-4 text-center text-xs text-slate-400 z-10 font-medium mt-auto">
         &copy; 2026 Senai
     </footer>
 
 </body>
+
 </html>
