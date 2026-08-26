@@ -30,6 +30,8 @@ def listar_produtos(
     request: Request,
     busca: str = "",
     categoria_id: int = 0,       # 0 = todas as categorias
+    pagina: int = 1,
+    por_pagina: int = 20,
     db: Session = Depends(get_db),
     usuario = Depends(get_usuario_logado)
 ):

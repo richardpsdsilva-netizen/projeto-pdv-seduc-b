@@ -1,46 +1,293 @@
 <!-- templates/pdv/historico.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
-<head><meta charset="UTF-8"><title>Histórico de Vendas — AAPM SENAI</title></head>
-<body>
-    <h1>Histórico de vendas</h1>
-    <a href="/pdv">← Voltar ao PDV</a>
 
-    <table border="1" cellpadding="8">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Data</th>
-                <th>Cliente</th>
-                <th>Itens</th>
-                <th>Desconto</th>
-                <th>Total</th>
-                <th>Operador</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for v in vendas %}
-            <tr>
-                <td><a href="/pdv/venda/{{ v.id }}">#{{ v.id }}</a></td>
-                <td>{{ v.criado_em.strftime('%d/%m/%Y %H:%M') }}</td>
-                <td>{{ v.cliente.nome if v.cliente else "Balcão" }}</td>
-                <td>{{ v.itens | length }}</td>
-                <td>
-                    {% if v.desconto_percentual > 0 %}
-                        <span style="color:green">
-                            {{ v.desconto_percentual|int }}%
-                            (− R$ {{ "%.2f"|format(v.desconto_valor) }})
-                        </span>
-                    {% else %}—{% endif %}
-                </td>
-                <td>R$ {{ "%.2f"|format(v.total_liquido) }}</td>
-                <td>{{ v.usuario.nome if v.usuario else "—" }}</td>
-            </tr>
-            {% endfor %}
-            {% if not vendas %}
-            <tr><td colspan="7" style="text-align:center">Nenhuma venda.</td></tr>
-            {% endif %}
-        </tbody>
-    </table>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Vendas — AAPM SENAI</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ── Container do Fundo Animado (Cubos) ── */
+        .cubes-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            margin: 0;
+            padding: 0;
+            pointer-events: none;
+        }
+
+        .cubes-bg li {
+            position: absolute;
+            list-style: none;
+            display: block;
+            width: 20px;
+            height: 20px;
+            background: rgba(220, 38, 38, 0.12);
+            /* Vermelho translúcido AAPM */
+            border: 1px solid rgba(220, 38, 38, 0.25);
+            border-radius: 12px;
+            bottom: -150px;
+            animation: moveCubes 12s infinite ease-in-out;
+        }
+
+        @keyframes moveCubes {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: translateY(-50vh) rotate(180deg);
+            }
+
+            70% {
+                transform: translateY(-35vh) rotate(240deg);
+            }
+
+            100% {
+                transform: translateY(-105vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Delays e durações alternadas para movimentação orgânica */
+        .cubes-bg li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: -2s;
+            animation-duration: 14s;
+        }
+
+        .cubes-bg li:nth-child(2) {
+            left: 10%;
+            width: 30px;
+            height: 30px;
+            animation-delay: -5s;
+            animation-duration: 10s;
+        }
+
+        .cubes-bg li:nth-child(3) {
+            left: 70%;
+            width: 45px;
+            height: 45px;
+            animation-delay: -8s;
+            animation-duration: 12s;
+        }
+
+        .cubes-bg li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: -12s;
+            animation-duration: 18s;
+        }
+
+        .cubes-bg li:nth-child(5) {
+            left: 65%;
+            width: 25px;
+            height: 25px;
+            animation-delay: -3s;
+            animation-duration: 9s;
+        }
+
+        .cubes-bg li:nth-child(6) {
+            left: 85%;
+            width: 90px;
+            height: 90px;
+            animation-delay: -9s;
+            animation-duration: 15s;
+        }
+
+        .cubes-bg li:nth-child(7) {
+            left: 55%;
+            width: 50px;
+            height: 50px;
+            animation-delay: -6s;
+            animation-duration: 13s;
+        }
+
+        .cubes-bg li:nth-child(8) {
+            left: 15%;
+            width: 20px;
+            height: 20px;
+            animation-delay: -1s;
+            animation-duration: 11s;
+        }
+
+        .cubes-bg li:nth-child(9) {
+            left: 3%;
+            width: 40px;
+            height: 40px;
+            animation-delay: -7s;
+            animation-duration: 16s;
+        }
+
+        .cubes-bg li:nth-child(10) {
+            left: 92%;
+            width: 70px;
+            height: 70px;
+            animation-delay: -11s;
+            animation-duration: 14s;
+        }
+    </style>
+</head>
+
+<body class="bg-red-50/40 min-h-screen flex flex-col font-sans text-slate-800 antialiased relative overflow-x-hidden">
+
+    <!-- ── Fundo Animado com Cubos ── -->
+    <ul class="cubes-bg">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+
+    <!-- Header / Navbar -->
+    <header class="w-full bg-white/85 backdrop-blur-md border-b border-red-200/60 shadow-sm sticky top-0 z-20">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div
+                    class="px-3.5 py-1.5 bg-red-600 text-white font-bold text-sm rounded-xl shadow-sm tracking-wider flex items-center justify-center">
+                    AAPM
+                </div>
+                <span class="font-bold text-slate-900 text-base sm:text-lg">Sistema de Estoque & PDV</span>
+
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-8 space-y-6 z-10 relative">
+
+        <!-- Cabeçalho da Seção -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Histórico de Vendas</h1>
+                <p class="text-slate-500 text-sm mt-1">Consulte todas as transações finalizadas no Ponto de Venda.</p>
+            </div>
+        </div>
+
+        <!-- Tabela do Histórico de Vendas -->
+        <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-red-200/60 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-600">
+                    <thead
+                        class="bg-slate-50/80 border-b border-slate-200 text-slate-700 uppercase font-semibold text-xs tracking-wider">
+                        <tr>
+                            <th class="px-6 py-4"># Venda</th>
+                            <th class="px-6 py-4">Data / Hora</th>
+                            <th class="px-6 py-4">Cliente</th>
+                            <th class="px-6 py-4 text-center">Itens</th>
+                            <th class="px-6 py-4">Desconto</th>
+                            <th class="px-6 py-4">Total</th>
+                            <th class="px-6 py-4">Operador</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        {% for v in vendas %}
+                        <tr class="hover:bg-red-50/30 transition-colors">
+
+                            <!-- ID da Venda -->
+                            <td class="px-6 py-4 font-bold text-red-600 whitespace-nowrap">
+                                <a href="/pdv/venda/{{ v.id }}" class="hover:underline inline-flex items-center gap-1">
+                                    #{{ v.id }}
+                                </a>
+                            </td>
+
+                            <!-- Data e Hora -->
+                            <td class="px-6 py-4 whitespace-nowrap text-slate-700 font-medium">
+                                {{ v.criado_em.strftime('%d/%m/%Y %H:%M') }}
+                            </td>
+
+                            <!-- Cliente -->
+                            <td class="px-6 py-4 font-semibold text-slate-900 whitespace-nowrap">
+                                {{ v.cliente.nome if v.cliente else "Balcão" }}
+                            </td>
+
+                            <!-- Quantidade de Itens -->
+                            <td class="px-6 py-4 text-center whitespace-nowrap">
+                                <span
+                                    class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                                    {{ v.itens | length }}
+                                </span>
+                            </td>
+
+                            <!-- Desconto Aplicado -->
+                            <td class="px-6 py-4 whitespace-nowrap font-medium text-xs">
+                                {% if v.desconto_percentual > 0 %}
+                                <span
+                                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">
+                                    {{ v.desconto_percentual|int }}% (− R$ {{ "%.2f"|format(v.desconto_valor) }})
+                                </span>
+                                {% else %}
+                                <span class="text-slate-400">—</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Total Líquido -->
+                            <td class="px-6 py-4 font-extrabold text-slate-900 whitespace-nowrap">
+                                R$ {{ "%.2f"|format(v.total_liquido) }}
+                            </td>
+
+                            <!-- Operador -->
+                            <td class="px-6 py-4 text-slate-600 whitespace-nowrap text-xs">
+                                {{ v.usuario.nome if v.usuario else "—" }}
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+
+                        {% if not vendas %}
+                        <tr>
+                            <td colspan="7" class="px-6 py-12 text-center text-slate-400">
+                                Nenhuma venda realizada até o momento.
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Botão Voltar -->
+
+
+
+
+        </div>
+
+        <a href="/pdv"
+            class="px-4 py-2 bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 font-semibold text-xs sm:text-sm rounded-xl transition-all">
+            ← Voltar ao PDV
+        </a>
+        </div>
+
+
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer
+        class="w-full bg-white/80 backdrop-blur-md border-t border-slate-200 py-4 text-center text-xs text-slate-400 mt-auto z-10 relative">
+        &copy; 2026 Associação de Pais e Mestres
+    </footer>
+
 </body>
+
 </html>

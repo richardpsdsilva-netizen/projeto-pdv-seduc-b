@@ -1,6 +1,7 @@
 <!-- templates/dashboard.html (ou pos_login.html) -->
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +18,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            z-index: 0; /* Fica no fundo */
+            z-index: 0;
             margin: 0;
             padding: 0;
         }
@@ -29,9 +30,9 @@
             display: block;
             width: 20px;
             height: 20px;
-            background: rgba(220, 38, 38, 0.12); /* Vermelho translúcido */
+            background: rgba(220, 38, 38, 0.12);
             border: 1px solid rgba(220, 38, 38, 0.25);
-            border-radius: 12px; /* Cantos arredondados */
+            border-radius: 12px;
             bottom: -150px;
             animation: moveCubes 22s infinite ease-in-out;
         }
@@ -58,68 +59,97 @@
         }
 
         /* Distribuição dos 16 cubos com posições e tempos variados */
-        .cubes-bg li:nth-child(1)  { left: 25%; width: 80px; height: 80px; animation-delay: -2s;  animation-duration: 26s; }
-        .cubes-bg li:nth-child(2)  { left: 10%; width: 30px; height: 30px; animation-delay: -7s;  animation-duration: 20s; }
-        .cubes-bg li:nth-child(3)  { left: 70%; width: 45px; height: 45px; animation-delay: -12s; animation-duration: 22s; }
-        .cubes-bg li:nth-child(4)  { left: 40%; width: 60px; height: 60px; animation-delay: -5s;  animation-duration: 30s; }
-        .cubes-bg li:nth-child(5)  { left: 65%; width: 25px; height: 25px; animation-delay: -15s; animation-duration: 18s; }
-        .cubes-bg li:nth-child(6)  { left: 85%; width: 90px; height: 90px; animation-delay: -8s;  animation-duration: 28s; }
-        .cubes-bg li:nth-child(7)  { left: 55%; width: 50px; height: 50px; animation-delay: -18s; animation-duration: 24s; }
-        .cubes-bg li:nth-child(8)  { left: 15%; width: 20px; height: 20px; animation-delay: -3s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(9)  { left: 3%;  width: 40px; height: 40px; animation-delay: -10s; animation-duration: 32s; }
+        .cubes-bg li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: -2s; animation-duration: 26s; }
+        .cubes-bg li:nth-child(2) { left: 10%; width: 30px; height: 30px; animation-delay: -7s; animation-duration: 20s; }
+        .cubes-bg li:nth-child(3) { left: 70%; width: 45px; height: 45px; animation-delay: -12s; animation-duration: 22s; }
+        .cubes-bg li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: -5s; animation-duration: 30s; }
+        .cubes-bg li:nth-child(5) { left: 65%; width: 25px; height: 25px; animation-delay: -15s; animation-duration: 18s; }
+        .cubes-bg li:nth-child(6) { left: 85%; width: 90px; height: 90px; animation-delay: -8s; animation-duration: 28s; }
+        .cubes-bg li:nth-child(7) { left: 55%; width: 50px; height: 50px; animation-delay: -18s; animation-duration: 24s; }
+        .cubes-bg li:nth-child(8) { left: 15%; width: 20px; height: 20px; animation-delay: -3s; animation-duration: 21s; }
+        .cubes-bg li:nth-child(9) { left: 3%; width: 40px; height: 40px; animation-delay: -10s; animation-duration: 32s; }
         .cubes-bg li:nth-child(10) { left: 92%; width: 70px; height: 70px; animation-delay: -14s; animation-duration: 25s; }
-        .cubes-bg li:nth-child(11) { left: 32%; width: 35px; height: 35px; animation-delay: -9s;  animation-duration: 23s; }
+        .cubes-bg li:nth-child(11) { left: 32%; width: 35px; height: 35px; animation-delay: -9s; animation-duration: 23s; }
         .cubes-bg li:nth-child(12) { left: 48%; width: 75px; height: 75px; animation-delay: -16s; animation-duration: 27s; }
-        .cubes-bg li:nth-child(13) { left: 78%; width: 20px; height: 20px; animation-delay: -4s;  animation-duration: 19s; }
+        .cubes-bg li:nth-child(13) { left: 78%; width: 20px; height: 20px; animation-delay: -4s; animation-duration: 19s; }
         .cubes-bg li:nth-child(14) { left: 20%; width: 55px; height: 55px; animation-delay: -11s; animation-duration: 29s; }
-        .cubes-bg li:nth-child(15) { left: 80%; width: 40px; height: 40px; animation-delay: -1s;  animation-duration: 21s; }
+        .cubes-bg li:nth-child(15) { left: 80%; width: 40px; height: 40px; animation-delay: -1s; animation-duration: 21s; }
         .cubes-bg li:nth-child(16) { left: 60%; width: 30px; height: 30px; animation-delay: -13s; animation-duration: 25s; }
     </style>
 </head>
+
 <body class="bg-red-50/40 min-h-screen flex flex-col font-sans text-slate-800 relative">
 
     <!-- Fundo Animado com 16 Cubos -->
     <ul class="cubes-bg">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
+        <li></li><li></li><li></li><li></li>
+        <li></li><li></li><li></li><li></li>
+        <li></li><li></li><li></li><li></li>
+        <li></li><li></li><li></li><li></li>
     </ul>
 
-    <!-- Topbar / Navbar (z-10 para ficar sobre a animação) -->
-    <header class="w-full bg-white/90 backdrop-blur-md border-b border-red-100/80 shadow-sm z-10">
-        <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+    <!-- Topbar / Navbar Principal (Navegação por links) -->
+    <header class="w-full bg-white/90 backdrop-blur-md border-b border-red-100/80 shadow-sm z-10 sticky top-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+            
+            <!-- Logo & Marca -->
             <div class="flex items-center space-x-3">
-                <div class="px-3.5 h-10 bg-red-600 text-white font-bold text-sm rounded-xl shadow-md inline-flex items-center justify-center tracking-wider transform transition-transform duration-300 hover:scale-105">
+                <div class="px-3.5 py-1.5 bg-red-600 text-white font-bold text-sm rounded-xl shadow-md inline-flex items-center justify-center tracking-wider transform transition-transform duration-300 hover:scale-105">
                     AAPM
                 </div>
-                <span class="font-bold text-slate-900 text-base sm:text-lg">Sistema AAPM</span>
+                <span class="font-bold text-slate-900 text-base sm:text-lg hidden sm:inline">Sistema AAPM</span>
             </div>
 
-            <div class="flex items-center space-x-4">
-                <span class="text-sm font-medium text-slate-600">
-                    Olá, <strong class="text-slate-900">{{ usuario.nome if usuario else 'Usuário' }}</strong>
-                </span>
-                <a href="/auth/logout" class="px-3.5 py-1.5 text-sm font-semibold text-red-600 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 hover:border-red-600 rounded-xl transition-all duration-200 shadow-sm">
+            <!-- Links de Navegação Desktop -->
+            <nav class="hidden lg:flex items-center space-x-1 font-medium text-sm text-slate-600">
+                <a href="/pdv" class="px-3 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-1.5">
+                    <span>🛒</span> PDV
+                </a>
+                <a href="/produtos" class="px-3 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-1.5">
+                    <span>📦</span> Produtos
+                </a>
+                <a href="/categorias" class="px-3 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-1.5">
+                    <span>🏷️</span> Categorias
+                </a>
+                <a href="/clientes" class="px-3 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-1.5">
+                    <span>🤝</span> Clientes
+                </a>
+                <a href="/movimentacoes/nova" class="px-3 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-1.5">
+                    <span>🔄</span> Movimentações
+                </a>
+                {% if not usuario or usuario.role == 'admin' %}
+                <a href="/usuarios" class="px-3 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors flex items-center gap-1.5">
+                    <span>👥</span> Usuários
+                </a>
+                {% endif %}
+            </nav>
+
+            <!-- Perfil do Usuário & Logout -->
+            <div class="flex items-center space-x-3">
+                <div class="text-right hidden sm:block">
+                    <span class="block text-xs text-slate-500">Logado como</span>
+                    <span class="text-sm font-bold text-slate-900">{{ usuario.nome if usuario else 'Usuário' }}</span>
+                </div>
+                <a href="/auth/logout" class="px-3 py-1.5 text-xs sm:text-sm font-semibold text-red-600 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 hover:border-red-600 rounded-xl transition-all duration-200 shadow-sm">
                     Sair
                 </a>
             </div>
         </div>
+
+        <!-- Menu Navegação Mobile (Exibido em telas menores) -->
+        <div class="lg:hidden border-t border-slate-100 bg-white/95 px-4 py-2 flex flex-wrap gap-1 justify-around text-xs font-semibold text-slate-700">
+            <a href="/pdv" class="px-2 py-1.5 rounded-md hover:bg-red-50 hover:text-red-600">🛒 PDV</a>
+            <a href="/produtos" class="px-2 py-1.5 rounded-md hover:bg-red-50 hover:text-red-600">📦 Produtos</a>
+            <a href="/categorias" class="px-2 py-1.5 rounded-md hover:bg-red-50 hover:text-red-600">🏷️ Categorias</a>
+            <a href="/clientes" class="px-2 py-1.5 rounded-md hover:bg-red-50 hover:text-red-600">🤝 Clientes</a>
+            <a href="/movimentacoes/nova" class="px-2 py-1.5 rounded-md hover:bg-red-50 hover:text-red-600">🔄 Movimentações</a>
+            {% if not usuario or usuario.role == 'admin' %}
+            <a href="/usuarios" class="px-2 py-1.5 rounded-md hover:bg-red-50 hover:text-red-600">👥 Usuários</a>
+            {% endif %}
+        </div>
     </header>
 
-    <!-- Conteúdo Principal (z-10) -->
+    <!-- Conteúdo Principal Dashboard (z-10) -->
     <main class="flex-1 max-w-5xl w-full mx-auto px-6 py-8 space-y-8 z-10">
 
         <!-- Cartão de Boas-Vindas / Perfil -->
@@ -129,120 +159,23 @@
                     Olá, {{ usuario.nome if usuario else 'Usuário' }}!
                 </h1>
                 <p class="text-slate-500 text-sm">
-                    Bem-vindo ao painel do sistema de gestão e vendas da AAPM.
+                    Bem-vindo ao painel do sistema de controle de estoque da AAPM. Utilize o menu superior para navegar entre os módulos.
                 </p>
             </div>
 
             <!-- Badge do Perfil -->
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider
-                {{ 'bg-red-50 text-red-700 border border-red-200' if usuario and usuario.role == 'admin' else 'bg-slate-100 text-slate-700 border border-slate-200' }}">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider {{ 'bg-red-50 text-red-700 border border-red-200' if usuario and usuario.role == 'admin' else 'bg-slate-100 text-slate-700 border border-slate-200' }}">
                 {{ usuario.role if usuario else 'operador' }}
             </span>
-        </section>
-
-        <!-- Seção de Navegação Rápida (Atalhos/Módulos) -->
-        <section class="space-y-4">
-            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 px-1">
-                Acesso Rápido aos Módulos
-            </h2>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-
-                <!-- 1. Módulo PDV (Frente de Caixa) -->
-                <a href="/pdv" class="group p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-red-100/80 shadow-md hover:shadow-xl hover:border-red-300 transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-lg group-hover:bg-red-600 group-hover:text-white transition-colors">
-                            🛒
-                        </div>
-                        <span class="text-xs font-semibold text-slate-400 group-hover:text-red-600 transition-colors">Acessar →</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-lg group-hover:text-red-600 transition-colors">PDV (Caixa)</h3>
-                        <p class="text-slate-500 text-xs mt-1">Realize vendas de forma rápida e emita comprovantes do caixa.</p>
-                    </div>
-                </a>
-
-                <!-- 2. Módulo Clientes -->
-                <a href="/clientes" class="group p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-red-100/80 shadow-md hover:shadow-xl hover:border-red-300 transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-lg group-hover:bg-red-600 group-hover:text-white transition-colors">
-                            📇
-                        </div>
-                        <span class="text-xs font-semibold text-slate-400 group-hover:text-red-600 transition-colors">Acessar →</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-lg group-hover:text-red-600 transition-colors">Clientes</h3>
-                        <p class="text-slate-500 text-xs mt-1">Gerencie o cadastro de alunos, professores e associados.</p>
-                    </div>
-                </a>
-
-                <!-- 3. Módulo Produtos -->
-                <a href="/produtos" class="group p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-red-100/80 shadow-md hover:shadow-xl hover:border-red-300 transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-lg group-hover:bg-red-600 group-hover:text-white transition-colors">
-                            📦
-                        </div>
-                        <span class="text-xs font-semibold text-slate-400 group-hover:text-red-600 transition-colors">Acessar →</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-lg group-hover:text-red-600 transition-colors">Produtos</h3>
-                        <p class="text-slate-500 text-xs mt-1">Consulte o catálogo, preços e quantitativos em estoque.</p>
-                    </div>
-                </a>
-
-                <!-- 4. Módulo Categorias -->
-                <a href="/categorias" class="group p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-red-100/80 shadow-md hover:shadow-xl hover:border-red-300 transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-lg group-hover:bg-red-600 group-hover:text-white transition-colors">
-                            🏷️
-                        </div>
-                        <span class="text-xs font-semibold text-slate-400 group-hover:text-red-600 transition-colors">Acessar →</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-lg group-hover:text-red-600 transition-colors">Categorias</h3>
-                        <p class="text-slate-500 text-xs mt-1">Gerencie os agrupamentos e tipos de itens do estoque.</p>
-                    </div>
-                </a>
-
-                <!-- 5. Módulo Movimentações -->
-                <a href="/movimentacoes/nova" class="group p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-red-100/80 shadow-md hover:shadow-xl hover:border-red-300 transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-lg group-hover:bg-red-600 group-hover:text-white transition-colors">
-                            🔄
-                        </div>
-                        <span class="text-xs font-semibold text-slate-400 group-hover:text-red-600 transition-colors">Acessar →</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-lg group-hover:text-red-600 transition-colors">Movimentações</h3>
-                        <p class="text-slate-500 text-xs mt-1">Registre entradas, saídas e consulte o histórico de itens.</p>
-                    </div>
-                </a>
-
-                <!-- 6. Módulo Usuários (Disponível se for Administrador) -->
-                {% if not usuario or usuario.role == 'admin' %}
-                <a href="/usuarios" class="group p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-red-100/80 shadow-md hover:shadow-xl hover:border-red-300 transition-all duration-200 hover:-translate-y-1 flex flex-col justify-between space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-lg group-hover:bg-red-600 group-hover:text-white transition-colors">
-                            👥
-                        </div>
-                        <span class="text-xs font-semibold text-slate-400 group-hover:text-red-600 transition-colors">Acessar →</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-lg group-hover:text-red-600 transition-colors">Usuários</h3>
-                        <p class="text-slate-500 text-xs mt-1">Controle de acessos, perfis e permissões dos operadores.</p>
-                    </div>
-                </a>
-                {% endif %}
-
-            </div>
         </section>
 
     </main>
 
     <!-- Rodapé (z-10) -->
     <footer class="w-full bg-white/80 backdrop-blur-md border-t border-red-100/80 py-4 text-center text-xs text-slate-400 z-10 font-medium mt-auto">
-        &copy; 2026 Associação de Pais e Mestres — SENAI
+        &copy; 2026 Senai
     </footer>
 
 </body>
+
 </html>

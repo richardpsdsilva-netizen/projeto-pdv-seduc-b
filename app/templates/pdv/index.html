@@ -97,7 +97,7 @@
             <nav class="flex items-center space-x-2 sm:space-x-4 text-xs sm:text-sm font-semibold">
                 <a href="/pdv/historico" class="px-3 py-2 text-slate-600 hover:text-red-600 hover:bg-red-50/50 rounded-xl transition-all">Histórico de Vendas</a>
                 <a href="/clientes" class="px-3 py-2 text-slate-600 hover:text-red-600 hover:bg-red-50/50 rounded-xl transition-all">Clientes</a>
-                <a href="/dashboard" class="px-3 py-2 bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 rounded-xl transition-all">← Dashboard</a>
+                <a href="/" class="px-3 py-2 bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 rounded-xl transition-all">← Dashboard</a>
             </nav>
         </div>
     </header>
@@ -182,22 +182,39 @@
                 <span id="contador-itens" class="text-xs bg-red-50 text-red-600 font-bold px-2.5 py-1 rounded-full border border-red-100">0 itens</span>
             </div>
 
-            <!-- Seleção do Cliente -->
-            <div class="space-y-2">
-                <label for="select-cliente" class="block text-xs font-bold uppercase tracking-wider text-slate-400">Cliente</label>
-                <select id="select-cliente" onchange="atualizarCliente(this)"
-                        class="w-full px-3.5 py-2.5 bg-slate-50 border border-red-200/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all text-xs font-semibold text-slate-700">
-                    <option value="0" data-associado="false">
-                        Sem identificação (sem desconto)
-                    </option>
-                    {% for c in clientes %}
-                    <option value="{{ c.id }}" data-associado="{{ 'true' if c.is_associado else 'false' }}">
-                        {{ c.nome }} {% if c.matricula %}({{ c.matricula }}){% endif %} {% if c.is_associado %} — ASSOCIADO{% endif %}
-                    </option>
-                    {% endfor %}
-                </select>
+            <!-- Seleção do Cliente Customizada -->
+            <div class="space-y-2 relative">
+                <label class="block text-xs font-bold uppercase tracking-wider text-red-600">Cliente</label>
+                
+                <!-- Botão principal que simula o Select -->
+                <button type="button" 
+                        id="btn-custom-select"
+                        onclick="toggleDropdown()"
+                        class="w-full px-4 py-2.5 bg-white border-2 border-red-500 rounded-2xl text-xs font-semibold text-slate-800 shadow-[0_0_12px_rgba(239,68,68,0.35)] focus:shadow-[0_0_18px_rgba(239,68,68,0.5)] focus:outline-none focus:border-red-600 transition-all cursor-pointer flex items-center justify-between">
+                    <span id="selected-option-text">Sem identificação (sem desconto)</span>
+                    <svg class="w-4 h-4 text-red-500 ml-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
 
-                <div id="badge-desconto" class="hidden p-2 bg-emerald-50 border border-emerald-200 text-emerald-700 font-semibold text-xs rounded-xl flex items-center gap-1.5">
+                <!-- Lista suspensa customizada (Menu de Opções) -->
+                <div id="dropdown-options" 
+                     class="hidden absolute top-full left-0 w-full mt-2 bg-white border-2 border-red-500 rounded-2xl shadow-[0_0_18px_rgba(239,68,68,0.35)] overflow-hidden z-50 divide-y divide-red-100 max-h-48 overflow-y-auto">
+                    
+                    <div onclick="selecionarCliente('0', 'Sem identificação (sem desconto)', false)"
+                         class="px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 cursor-pointer transition-colors">
+                        Sem identificação (sem desconto)
+                    </div>
+
+                    {% for c in clientes %}
+                    <div onclick="selecionarCliente('{{ c.id }}', '{{ c.nome }} {% if c.matricula %}({{ c.matricula }}){% endif %} {% if c.is_associado %} — ASSOCIADO{% endif %}', {{ 'true' if c.is_associado else 'false' }})"
+                         class="px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 cursor-pointer transition-colors">
+                        {{ c.nome }} {% if c.matricula %}({{ c.matricula }}){% endif %} {% if c.is_associado %} — ASSOCIADO{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div id="badge-desconto" class="hidden p-2 bg-emerald-50 border border-emerald-200 text-emerald-700 font-semibold text-xs rounded-xl flex items-center gap-1.5 mt-2">
                     <span>✓</span> {{ desconto_associado|int if desconto_associado else 10 }}% de desconto aplicado (Associado)
                 </div>
             </div>
@@ -255,6 +272,35 @@
         let pctDesconto = {{ desconto_associado|default(10)|int }};
         let clienteAssociado = false;
 
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-options');
+            dropdown.classList.toggle('hidden');
+        }
+
+        function selecionarCliente(id, texto, associado) {
+            document.getElementById('selected-option-text').innerText = texto;
+            document.getElementById('input-cliente-id').value = id;
+            
+            clienteAssociado = associado;
+            const badge = document.getElementById('badge-desconto');
+            if (clienteAssociado) {
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+
+            document.getElementById('dropdown-options').classList.add('hidden');
+            renderizarCarrinho();
+        }
+
+        document.addEventListener('click', function(event) {
+            const container = document.getElementById('btn-custom-select');
+            const dropdown = document.getElementById('dropdown-options');
+            if (container && !container.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
         function filtrarProdutos() {
             const termo = document.getElementById('busca-produto').value.toLowerCase();
             const cards = document.querySelectorAll('.card-produto');
@@ -302,21 +348,6 @@
 
             if (item.qtd <= 0) {
                 carrinho = carrinho.filter(i => i.id !== id);
-            }
-
-            renderizarCarrinho();
-        }
-
-        function atualizarCliente(select) {
-            const opt = select.options[select.selectedIndex];
-            clienteAssociado = opt.getAttribute('data-associado') === 'true';
-            document.getElementById('input-cliente-id').value = select.value;
-            
-            const badge = document.getElementById('badge-desconto');
-            if (clienteAssociado) {
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
             }
 
             renderizarCarrinho();
