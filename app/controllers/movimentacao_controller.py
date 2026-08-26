@@ -1,9 +1,6 @@
 # controllers/movimentacao_controller.py
 # ============================================================
 # Entradas e saídas de estoque.
-# Qualquer usuário logado pode registrar movimentações.
-# Somente admins podem ver o histórico completo de todos
-# os produtos — operadores veem apenas suas próprias.
 # ============================================================
 
 from fastapi import APIRouter, Depends, Request, Form
@@ -52,18 +49,18 @@ def listar_movimentacoes(
         request,
         "movimentacoes/index.html",
         {
-            "request":        request,
-            "usuario":        admin,
-            "movimentacoes":  movimentacoes,
-            "produtos":       produtos,
-            "produto_id":     produto_id,
-            "tipo":           tipo,
+            "request":       request,
+            "usuario":       admin,
+            "movimentacoes": movimentacoes,
+            "produtos":      produtos,
+            "produto_id":    produto_id,
+            "tipo":          tipo,
         }
     )
 
 
 # ============================================================
-# REGISTRAR MOVIMENTAÇÃO
+# REGISTRAR MOVIMENTAÇÃO (Vem ANTES de qualquer /{id})
 # ============================================================
 
 @router.get("/nova")
@@ -75,8 +72,6 @@ def form_nova_movimentacao(
 ):
     """
     Exibe o formulário de registro de movimentação.
-    Pode receber produto_id via query string para
-    pré-selecionar o produto direto da página de detalhe.
     """
     produtos = db.query(Produto).filter(Produto.ativo == True).all()
 
@@ -88,7 +83,7 @@ def form_nova_movimentacao(
             "usuario":    usuario,
             "produtos":   produtos,
             "produto_id": produto_id,
-            "tipos":      TipoMovimentacao,  # passa o enum para o template
+            "tipos":      TipoMovimentacao,
         }
     )
 
@@ -105,16 +100,14 @@ def registrar_movimentacao(
     usuario             = Depends(get_usuario_logado)
 ):
     """
-    Registra a movimentação e atualiza o estoque do produto
-    em uma única transação — garante consistência.
-
-    Se qualquer operação falhar, o rollback desfaz tudo:
-    nem a movimentação é salva nem o estoque é alterado.
+    Registra a movimentação e atualiza o estoque do produto.
     """
     produtos = db.query(Produto).filter(Produto.ativo == True).all()
 
-    # Valida se o tipo enviado é válido
-    if tipo not in (TipoMovimentacao.ENTRADA, TipoMovimentacao.SAIDA):
+    # Obtém os valores válidos do Enum de movimentação
+    tipos_validos = [t.value if hasattr(t, 'value') else t for t in TipoMovimentacao]
+
+    if tipo not in tipos_validos and tipo not in ("entrada", "saida"):
         return templates.TemplateResponse(
             request,
             "movimentacoes/form.html",
@@ -144,9 +137,6 @@ def registrar_movimentacao(
             status_code=400
         )
 
-    # Busca o produto com lock para evitar race condition:
-    # se dois usuários registrarem saída ao mesmo tempo,
-    # with_for_update() garante que um espera o outro terminar.
     produto = db.query(Produto).filter(
         Produto.id == produto_id
     ).with_for_update().first()
@@ -155,7 +145,7 @@ def registrar_movimentacao(
         return RedirectResponse(url="/movimentacoes/nova", status_code=302)
 
     # Impede saída maior que o estoque disponível
-    if tipo == TipoMovimentacao.SAIDA and quantidade > produto.estoque_atual:
+    if (tipo == "saida" or (hasattr(TipoMovimentacao, 'SAIDA') and tipo == TipoMovimentacao.SAIDA)) and quantidade > produto.estoque_atual:
         return templates.TemplateResponse(
             request,
             "movimentacoes/form.html",
@@ -173,28 +163,24 @@ def registrar_movimentacao(
             status_code=400
         )
 
-    # ----------------------------------------------------------
     # Atualiza o estoque do produto
-    # ----------------------------------------------------------
-    if tipo == TipoMovimentacao.ENTRADA:
+    if tipo == "entrada" or (hasattr(TipoMovimentacao, 'ENTRADA') and tipo == TipoMovimentacao.ENTRADA):
         produto.estoque_atual += quantidade
     else:
         produto.estoque_atual -= quantidade
 
-    # ----------------------------------------------------------
     # Registra a movimentação no histórico
-    # ----------------------------------------------------------
     movimentacao = Movimentacao(
         tipo           = tipo,
         quantidade     = quantidade,
         preco_unitario = preco_unitario,
         observacao     = observacao or None,
         produto_id     = produto_id,
-        usuario_id     = usuario.get("id"),
+        usuario_id     = usuario.get("id") if isinstance(usuario, dict) else getattr(usuario, "id", None),
     )
 
     db.add(movimentacao)
-    db.commit()  # salva produto (estoque) + movimentação juntos
+    db.commit()
 
     return RedirectResponse(
         url=f"/produtos/{produto_id}?movimentacao=ok",
@@ -203,7 +189,7 @@ def registrar_movimentacao(
 
 
 # ============================================================
-# HISTÓRICO POR PRODUTO — acessível por qualquer logado
+# HISTÓRICO POR PRODUTO
 # ============================================================
 
 @router.get("/produto/{produto_id}")
@@ -213,10 +199,6 @@ def historico_produto(
     db: Session = Depends(get_db),
     usuario = Depends(get_usuario_logado)
 ):
-    """
-    Exibe o histórico de movimentações de um produto específico
-    com o resumo de entradas, saídas e saldo.
-    """
     produto = db.query(Produto).filter(Produto.id == produto_id).first()
 
     if not produto:
@@ -229,14 +211,13 @@ def historico_produto(
         .all()
     )
 
-    # Resumo calculado em Python a partir do histórico
     total_entradas = sum(
         m.quantidade for m in movimentacoes
-        if m.tipo == TipoMovimentacao.ENTRADA
+        if m.tipo == "entrada" or (hasattr(TipoMovimentacao, 'ENTRADA') and m.tipo == TipoMovimentacao.ENTRADA)
     )
     total_saidas = sum(
         m.quantidade for m in movimentacoes
-        if m.tipo == TipoMovimentacao.SAIDA
+        if m.tipo == "saida" or (hasattr(TipoMovimentacao, 'SAIDA') and m.tipo == TipoMovimentacao.SAIDA)
     )
 
     return templates.TemplateResponse(

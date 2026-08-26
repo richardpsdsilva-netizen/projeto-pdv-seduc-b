@@ -32,7 +32,7 @@ def listar_produtos(
     busca: str = "",
     categoria_id: int = 0,       # 0 = todas as categorias
     pagina: int = 1,
-    por_pagina: int = 20,
+    por_pagina: int = 2,
     db: Session = Depends(get_db),
     usuario = Depends(get_usuario_logado)
 ):
@@ -48,32 +48,32 @@ def listar_produtos(
 
     total_produtos = query.count()
 
-    pagina = max(pagina , 1 )
-    por_pagina = max (por_pagina , 1 )
+    pagina = max(pagina, 1)
+    por_pagina = max(por_pagina, 1)
 
-    total_paginas = math.ceil(total_produtos / por_pagina ) if total_produtos else 1
+    total_paginas = math.ceil(total_produtos / por_pagina) if total_produtos else 1
 
-    offset = ( pagina -1 ) * por_pagina
+    offset = (pagina - 1) * por_pagina
 
-    produtos = query.offset(offset).limit(por_pagina).all
+    # ✅ CORRIGIDO: Utilização do objeto query com a chamada correta .all()
+    produtos = query.offset(offset).limit(por_pagina).all()
 
-
-    categorias  = db.query(Categoria).filter(Categoria.ativo == True).all()
+    categorias = db.query(Categoria).filter(Categoria.ativo == True).all()
 
     return templates.TemplateResponse(
         request,
         "produtos/index.html",
         {
-            "request":      request,
-            "usuario":      usuario,
-            "produtos":     produtos,
-            "categorias":   categorias,
-            "busca":        busca,
-            "categoria_id": categoria_id,
-            "pagina":       pagina,
-            "por_pagina":   por_pagina,
-        "total_produtos":   total_produtos,
-        "total_paginas":    total_paginas
+            "request":        request,
+            "usuario":        usuario,
+            "produtos":       produtos,
+            "categorias":     categorias,
+            "busca":          busca,
+            "categoria_id":   categoria_id,
+            "pagina":         pagina,
+            "por_pagina":     por_pagina,
+            "total_produtos": total_produtos,
+            "total_paginas":  total_paginas
         }
     )
 
@@ -116,7 +116,6 @@ async def criar_produto(
     categorias = db.query(Categoria).filter(Categoria.ativo == True).all()
 
     # Verifica duplicidade de nome
-    # ilike() para comparação case-insensitive, evitando produtos "Camiseta" e "camiseta".
     if db.query(Produto).filter(Produto.nome.ilike(nome)).first():
         return templates.TemplateResponse(
             request,
@@ -288,31 +287,22 @@ async def _salvar_imagem(imagem: UploadFile | None) -> str | None:
     """
     Salva o arquivo enviado em /static/uploads/ e retorna
     o path relativo para guardar no banco.
-
-    Retorna None se nenhum arquivo foi enviado ou se o
-    arquivo enviado estiver vazio (campo deixado em branco).
     """
-    # UploadFile com filename vazio = campo não preenchido
     if not imagem or not imagem.filename:
         return None
 
-    # Valida a extensão — aceita apenas imagens
     extensoes_permitidas = {".jpg", ".jpeg", ".png", ".webp"}
     _, ext = os.path.splitext(imagem.filename.lower())
 
     if ext not in extensoes_permitidas:
-        return None  # ignora silenciosamente — pode virar erro em produção
+        return None
 
-    # Garante nome de arquivo único usando o nome original
-    # Em produção: use uuid4() para evitar colisões e exposição de nomes
     nome_arquivo = f"{imagem.filename}"
     caminho_completo = os.path.join(UPLOAD_DIR, nome_arquivo)
 
-    # Salva o arquivo no disco
     with open(caminho_completo, "wb") as buffer:
         shutil.copyfileobj(imagem.file, buffer)
 
-    # Retorna o path relativo ao /static (para montar a URL)
     return f"uploads/{nome_arquivo}"
 
 

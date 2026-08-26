@@ -1,6 +1,7 @@
 <!-- templates/pdv/index.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,8 +29,8 @@
             display: block;
             width: 20px;
             height: 20px;
-            background: rgba(220, 38, 38, 0.12); /* Vermelho translúcido AAPM */
-            border: 1px solid rgba(220, 38, 38, 0.25);
+            background: rgba(220, 38, 38, 0.08);
+            border: 1px solid rgba(220, 38, 38, 0.15);
             border-radius: 12px;
             bottom: -150px;
             animation: moveCubes 12s infinite ease-in-out;
@@ -40,128 +41,167 @@
                 transform: translateY(0) rotate(0deg);
                 opacity: 0;
             }
+
             20% {
                 opacity: 0.8;
             }
+
             50% {
                 transform: translateY(-50vh) rotate(180deg);
             }
+
             70% {
                 transform: translateY(-35vh) rotate(240deg);
             }
+
             100% {
                 transform: translateY(-105vh) rotate(360deg);
                 opacity: 0;
             }
         }
 
-        /* Delays negativos para animação fluida imediata */
         .cubes-bg li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: -2s; animation-duration: 14s; }
         .cubes-bg li:nth-child(2) { left: 10%; width: 30px; height: 30px; animation-delay: -5s; animation-duration: 10s; }
         .cubes-bg li:nth-child(3) { left: 70%; width: 45px; height: 45px; animation-delay: -8s; animation-duration: 12s; }
         .cubes-bg li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: -12s; animation-duration: 18s; }
-        .cubes-bg li:nth-child(5) { left: 65%; width: 25px; height: 25px; animation-delay: -3s; animation-duration: 9s;  }
+        .cubes-bg li:nth-child(5) { left: 65%; width: 25px; height: 25px; animation-delay: -3s; animation-duration: 9s; }
         .cubes-bg li:nth-child(6) { left: 85%; width: 90px; height: 90px; animation-delay: -9s; animation-duration: 15s; }
         .cubes-bg li:nth-child(7) { left: 55%; width: 50px; height: 50px; animation-delay: -6s; animation-duration: 13s; }
         .cubes-bg li:nth-child(8) { left: 15%; width: 20px; height: 20px; animation-delay: -1s; animation-duration: 11s; }
-        .cubes-bg li:nth-child(9) { left: 3%;  width: 40px; height: 40px; animation-delay: -7s; animation-duration: 16s; }
-        .cubes-bg li:nth-child(10){ left: 92%; width: 70px; height: 70px; animation-delay: -11s; animation-duration: 14s; }
+        .cubes-bg li:nth-child(9) { left: 3%; width: 40px; height: 40px; animation-delay: -7s; animation-duration: 16s; }
+        .cubes-bg li:nth-child(10) { left: 92%; width: 70px; height: 70px; animation-delay: -11s; animation-duration: 14s; }
     </style>
 </head>
-<body class="bg-red-50/40 min-h-screen flex flex-col font-sans text-slate-800 antialiased relative overflow-x-hidden">
+
+<body class="bg-red-50/30 min-h-screen flex flex-col font-sans text-slate-800 antialiased relative overflow-x-hidden">
 
     <!-- ── Fundo Animado com Cubos ── -->
     <ul class="cubes-bg">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
+        <li></li><li></li><li></li><li></li><li></li>
+        <li></li><li></li><li></li><li></li><li></li>
     </ul>
 
-    <!-- Header / Navbar -->
-    <header class="w-full bg-white/85 backdrop-blur-md border-b border-red-200/60 shadow-sm sticky top-0 z-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="px-3 py-1 bg-red-600 text-white font-bold text-sm rounded-xl shadow-sm tracking-wider flex items-center justify-center">
-                    AAPM
+    <!-- ── Header / Navbar Fiel ao Painel Principal ── -->
+    <header class="w-full bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <div class="flex items-center justify-between h-16">
+                
+                <!-- Logo AAPM + Nome do Sistema -->
+                <div class="flex items-center space-x-3">
+                    <a href="/" class="flex items-center gap-3">
+                        <div class="px-3.5 py-1 bg-red-600 text-white font-extrabold text-sm rounded-xl shadow-sm tracking-wide">
+                            AAPM
+                        </div>
+                        <span class="font-extrabold text-slate-900 text-lg hidden sm:inline-block">Sistema AAPM</span>
+                    </a>
                 </div>
-                <span class="font-bold text-slate-900 text-base sm:text-lg">PDV — Ponto de Venda</span>
+
+                <!-- Links de Navegação Desktop (Estilo idêntico à imagem) -->
+                <nav class="hidden md:flex items-center space-x-6 text-sm font-semibold text-slate-600">
+                    <a href="/pdv" class="flex items-center gap-1.5 text-red-600 font-bold transition-colors">
+                        <span>🛒</span> PDV
+                    </a>
+                    <a href="/produtos" class="flex items-center gap-1.5 hover:text-red-600 transition-colors">
+                        <span>📦</span> Produtos
+                    </a>
+                    <a href="/categorias" class="flex items-center gap-1.5 hover:text-red-600 transition-colors">
+                        <span>🏷️</span> Categorias
+                    </a>
+                    <a href="/clientes" class="flex items-center gap-1.5 hover:text-red-600 transition-colors">
+                        <span>🤝</span> Clientes
+                    </a>
+                    <a href="/movimentacoes" class="flex items-center gap-1.5 hover:text-red-600 transition-colors">
+                        <span>🔄</span> Movimentações
+                    </a>
+                </nav>
+
+                <!-- Área de Perfil do Usuário -->
+                <div class="hidden md:flex items-center space-x-3 text-xs">
+                    <div class="text-right">
+                        <span class="text-slate-400 block text-[10px] leading-tight">Logado como</span>
+                        <span class="font-bold text-slate-900 text-sm">neymar</span>
+                    </div>
+                    <a href="/logout" class="px-3.5 py-1.5 border border-red-200 text-red-600 font-semibold rounded-full hover:bg-red-50 transition-colors">
+                        Sair
+                    </a>
+                </div>
+
+                <!-- Botão Menu Mobile (Hambúrguer) -->
+                <div class="flex md:hidden">
+                    <button type="button" onclick="toggleMobileMenu()" class="p-2 rounded-xl text-slate-600 hover:bg-red-50 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
             </div>
-            
-            <nav class="flex items-center space-x-2 sm:space-x-4 text-xs sm:text-sm font-semibold">
-                <a href="/pdv/historico" class="px-3 py-2 text-slate-600 hover:text-red-600 hover:bg-red-50/50 rounded-xl transition-all">Histórico de Vendas</a>
-                <a href="/clientes" class="px-3 py-2 text-slate-600 hover:text-red-600 hover:bg-red-50/50 rounded-xl transition-all">Clientes</a>
-                <a href="/" class="px-3 py-2 bg-slate-100/80 hover:bg-slate-200/80 text-slate-700 rounded-xl transition-all">← Dashboard</a>
-            </nav>
+        </div>
+
+        <!-- Menu Dropdown Mobile -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white px-4 pt-3 pb-4 space-y-2 font-semibold text-sm">
+            <a href="/pdv" class="flex items-center gap-2 px-3 py-2 text-red-600 bg-red-50 font-bold rounded-xl">🛒 PDV</a>
+            <a href="/produtos" class="flex items-center gap-2 px-3 py-2 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-xl">📦 Produtos</a>
+            <a href="/categorias" class="flex items-center gap-2 px-3 py-2 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-xl">🏷️ Categorias</a>
+            <a href="/clientes" class="flex items-center gap-2 px-3 py-2 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-xl">🤝 Clientes</a>
+            <a href="/movimentacoes" class="flex items-center gap-2 px-3 py-2 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-xl">🔄 Movimentações</a>
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-slate-600 text-xs">Logado como <strong class="text-slate-900">neymar</strong></span>
+                <a href="/logout" class="px-3 py-1 border border-red-200 text-red-600 text-xs font-semibold rounded-full hover:bg-red-50">Sair</a>
+            </div>
         </div>
     </header>
 
-    <!-- Alertas de Erro (URL Params) -->
+    <!-- Alertas de Erro -->
     {% set erro = request.query_params.get('erro') %}
     {% if erro %}
-        <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 pt-4 z-10 relative">
-            <div class="p-4 bg-red-100/80 backdrop-blur-sm border border-red-200 text-red-700 text-sm font-semibold rounded-2xl shadow-sm flex items-center justify-between">
-                <div>
-                    ⚠️ 
-                    {% if erro == 'vazio' %}Carrinho vazio. Adicione produtos antes de finalizar.
-                    {% elif erro == 'estoque' %}Estoque insuficiente para: <strong>{{ request.query_params.get('produto') }}</strong>
-                    {% elif erro == 'quantidade' %}Quantidade inválida informada.
-                    {% else %}Ocorreu um erro ao processar a venda. Tente novamente.
-                    {% endif %}
-                </div>
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 pt-4 z-10 relative">
+        <div class="p-4 bg-red-100/80 backdrop-blur-sm border border-red-200 text-red-700 text-sm font-semibold rounded-2xl shadow-sm flex items-center justify-between">
+            <div>
+                ⚠️
+                {% if erro == 'vazio' %}Carrinho vazio. Adicione produtos antes de finalizar.
+                {% elif erro == 'estoque' %}Estoque insuficiente para: <strong>{{ request.query_params.get('produto') }}</strong>
+                {% elif erro == 'quantidade' %}Quantidade inválida informada.
+                {% else %}Ocorreu um erro ao processar a venda. Tente novamente.
+                {% endif %}
             </div>
         </div>
+    </div>
     {% endif %}
 
-    <!-- Área Principal em Duas Colunas -->
+    <!-- Área Principal do PDV -->
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start z-10 relative">
 
-        <!-- COLUNA ESQUERDA — Buscador e Grade de Produtos (Col-8) -->
+        <!-- COLUNA ESQUERDA — Buscador e Grade de Produtos -->
         <section class="lg:col-span-7 xl:col-span-8 space-y-4">
-            
-            <!-- Campo de Busca -->
+
             <div class="relative">
-                <input type="text"
-                       id="busca-produto"
-                       oninput="filtrarProdutos()"
-                       placeholder="🔍 Buscar produto pelo nome..."
-                       autocomplete="off"
-                       class="w-full pl-4 pr-4 py-3 bg-white/90 backdrop-blur-md border border-red-200/80 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all text-sm font-medium">
+                <input type="text" id="busca-produto" oninput="filtrarProdutos()"
+                    placeholder="🔍 Buscar produto pelo nome..." autocomplete="off"
+                    class="w-full pl-4 pr-4 py-3 bg-white/90 backdrop-blur-md border border-red-200/80 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all text-sm font-medium">
             </div>
 
-            <!-- Grade de Card dos Produtos -->
             <div id="grade-produtos" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
                 {% for p in produtos %}
                 <div class="card-produto bg-white/90 backdrop-blur-md rounded-2xl border border-red-200/60 shadow-sm hover:shadow-md hover:border-red-300 transition-all cursor-pointer overflow-hidden flex flex-col justify-between group p-3 relative {{ 'opacity-50 pointer-events-none bg-slate-50' if p.estoque_atual == 0 else '' }}"
-                     data-id="{{ p.id }}"
-                     data-nome="{{ p.nome }}"
-                     data-preco="{{ p.preco }}"
-                     data-estoque="{{ p.estoque_atual }}"
-                     data-nome-lower="{{ p.nome.lower() }}"
-                     onclick="adicionarAoCarrinho(this)">
+                    data-id="{{ p.id }}" data-nome="{{ p.nome }}" data-preco="{{ p.preco }}"
+                    data-estoque="{{ p.estoque_atual }}" data-nome-lower="{{ p.nome.lower() }}"
+                    onclick="adicionarAoCarrinho(this)">
 
                     {% if p.estoque_atual == 0 %}
-                        <span class="absolute top-2 right-2 bg-slate-800 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md z-10">Esgotado</span>
+                    <span class="absolute top-2 right-2 bg-slate-800 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-md z-10">Esgotado</span>
                     {% endif %}
 
-                    <!-- Container Imagem 1:1 -->
                     <div class="w-full aspect-square bg-slate-50/80 rounded-xl overflow-hidden mb-3 flex items-center justify-center p-2 border border-slate-100">
                         {% if p.imagem_url %}
-                            <img src="{{ p.imagem_url }}" alt="{{ p.nome }}" class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-200">
+                        <img src="{{ p.imagem_url }}" alt="{{ p.nome }}" class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-200">
                         {% else %}
-                            <span class="text-3xl">📦</span>
+                        <span class="text-3xl">📦</span>
                         {% endif %}
                     </div>
 
-                    <!-- Dados do Produto -->
                     <div class="space-y-1">
-                        <h3 class="font-bold text-slate-800 text-sm line-clamp-1 group-hover:text-red-600 transition-colors">{{ p.nome }}</h3>
+                        <h3 class="font-bold text-slate-800 text-sm line-clamp-1 group-hover:text-red-600 transition-colors">
+                            {{ p.nome }}</h3>
                         <div class="flex items-center justify-between text-xs pt-1">
                             <span class="font-extrabold text-red-600 text-sm">R$ {{ "%.2f"|format(p.preco) }}</span>
                             <span class="text-slate-500 font-medium">Qtd: <strong class="text-slate-700">{{ p.estoque_atual }}</strong></span>
@@ -172,7 +212,7 @@
             </div>
         </section>
 
-        <!-- COLUNA DIREITA — Carrinho de Compras (Col-4) -->
+        <!-- COLUNA DIREITA — Carrinho de Compras -->
         <aside class="lg:col-span-5 xl:col-span-4 bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-red-200/60 p-5 space-y-5 sticky top-20">
 
             <div class="flex items-center justify-between border-b border-red-100 pb-3">
@@ -182,33 +222,29 @@
                 <span id="contador-itens" class="text-xs bg-red-50 text-red-600 font-bold px-2.5 py-1 rounded-full border border-red-100">0 itens</span>
             </div>
 
-            <!-- Seleção do Cliente Customizada -->
+            <!-- Seleção do Cliente -->
             <div class="space-y-2 relative">
                 <label class="block text-xs font-bold uppercase tracking-wider text-red-600">Cliente</label>
-                
-                <!-- Botão principal que simula o Select -->
-                <button type="button" 
-                        id="btn-custom-select"
-                        onclick="toggleDropdown()"
-                        class="w-full px-4 py-2.5 bg-white border-2 border-red-500 rounded-2xl text-xs font-semibold text-slate-800 shadow-[0_0_12px_rgba(239,68,68,0.35)] focus:shadow-[0_0_18px_rgba(239,68,68,0.5)] focus:outline-none focus:border-red-600 transition-all cursor-pointer flex items-center justify-between">
+
+                <button type="button" id="btn-custom-select" onclick="toggleDropdown()"
+                    class="w-full px-4 py-2.5 bg-white border-2 border-red-500 rounded-2xl text-xs font-semibold text-slate-800 shadow-[0_0_12px_rgba(239,68,68,0.35)] focus:shadow-[0_0_18px_rgba(239,68,68,0.5)] focus:outline-none focus:border-red-600 transition-all cursor-pointer flex items-center justify-between">
                     <span id="selected-option-text">Sem identificação (sem desconto)</span>
                     <svg class="w-4 h-4 text-red-500 ml-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>
                 </button>
 
-                <!-- Lista suspensa customizada (Menu de Opções) -->
-                <div id="dropdown-options" 
-                     class="hidden absolute top-full left-0 w-full mt-2 bg-white border-2 border-red-500 rounded-2xl shadow-[0_0_18px_rgba(239,68,68,0.35)] overflow-hidden z-50 divide-y divide-red-100 max-h-48 overflow-y-auto">
-                    
+                <div id="dropdown-options"
+                    class="hidden absolute top-full left-0 w-full mt-2 bg-white border-2 border-red-500 rounded-2xl shadow-[0_0_18px_rgba(239,68,68,0.35)] overflow-hidden z-50 divide-y divide-red-100 max-h-48 overflow-y-auto">
+
                     <div onclick="selecionarCliente('0', 'Sem identificação (sem desconto)', false)"
-                         class="px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 cursor-pointer transition-colors">
+                        class="px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 cursor-pointer transition-colors">
                         Sem identificação (sem desconto)
                     </div>
 
                     {% for c in clientes %}
                     <div onclick="selecionarCliente('{{ c.id }}', '{{ c.nome }} {% if c.matricula %}({{ c.matricula }}){% endif %} {% if c.is_associado %} — ASSOCIADO{% endif %}', {{ 'true' if c.is_associado else 'false' }})"
-                         class="px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 cursor-pointer transition-colors">
+                        class="px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-red-50 hover:text-red-600 cursor-pointer transition-colors">
                         {{ c.nome }} {% if c.matricula %}({{ c.matricula }}){% endif %} {% if c.is_associado %} — ASSOCIADO{% endif %}
                     </div>
                     {% endfor %}
@@ -219,7 +255,7 @@
                 </div>
             </div>
 
-            <!-- Lista de Itens Adicionados -->
+            <!-- Lista de Itens -->
             <div id="lista-carrinho" class="min-h-[160px] max-h-[280px] overflow-y-auto space-y-2 pr-1 divide-y divide-slate-100">
                 <div id="msg-vazio" class="py-12 flex flex-col items-center justify-center text-slate-400 text-xs text-center space-y-2">
                     <span class="text-3xl">🛒</span>
@@ -227,7 +263,7 @@
                 </div>
             </div>
 
-            <!-- Totais e Finalização -->
+            <!-- Totais -->
             <div class="pt-3 border-t border-red-100 space-y-4">
                 <div id="totais" class="hidden space-y-2 text-sm">
                     <div class="flex justify-between text-slate-500">
@@ -244,43 +280,87 @@
                     </div>
                 </div>
 
-                <textarea id="obs-input"
-                          rows="2"
-                          placeholder="Observação (opcional)..."
-                          class="w-full px-3.5 py-2 bg-slate-50 border border-red-200/80 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all text-xs resize-none"></textarea>
+                <textarea id="obs-input" rows="2" placeholder="Observação (opcional)..."
+                    class="w-full px-3.5 py-2 bg-slate-50 border border-red-200/80 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all text-xs resize-none"></textarea>
 
                 <form id="form-venda" action="/pdv/finalizar" method="post">
                     <input type="hidden" name="carrinho_json" id="input-carrinho">
                     <input type="hidden" name="cliente_id" id="input-cliente-id" value="0">
                     <input type="hidden" name="observacao" id="input-obs">
-                    <button id="btn-finalizar"
-                            type="button"
-                            disabled
-                            onclick="finalizarVenda()"
-                            class="w-full py-3 px-4 bg-red-600 hover:bg-red-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold rounded-xl shadow-md transition-all text-sm">
+                    <button id="btn-finalizar" type="button" disabled onclick="finalizarVenda()"
+                        class="w-full py-3 px-4 bg-red-600 hover:bg-red-700 disabled:bg-slate-200 disabled:text-slate-400 text-white font-bold rounded-xl shadow-md transition-all text-sm">
                         Finalizar Venda
                     </button>
                 </form>
             </div>
         </aside>
-
     </main>
 
-    <!-- Script com a Lógica do PDV -->
+    <!-- Paginação -->
+    {% if total_paginas and total_paginas > 1 %}
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 mb-8 z-10 relative">
+        <div class="px-6 py-4 bg-white/90 backdrop-blur-md border border-red-200/60 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600 shadow-sm">
+            <div>
+                Página <span class="font-bold text-slate-900">{{ pagina }}</span> de <span class="font-bold text-slate-900">{{ total_paginas }}</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+                {% if pagina > 1 %}
+                <a href="/produtos?pagina={{ pagina - 1 }}&busca={{ busca or '' }}&categoria_id={{ categoria_id or 0 }}"
+                    class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors font-medium">
+                    &laquo; Anterior
+                </a>
+                {% else %}
+                <span class="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-slate-400 cursor-not-allowed font-medium">
+                    &laquo; Anterior
+                </span>
+                {% endif %}
+
+                {% for p_num in range(1, total_paginas + 1) %}
+                {% if p_num == pagina %}
+                <span class="px-3 py-1.5 bg-red-600 text-white font-bold rounded-lg shadow-sm">
+                    {{ p_num }}
+                </span>
+                {% else %}
+                <a href="/produtos?pagina={{ p_num }}&busca={{ busca or '' }}&categoria_id={{ categoria_id or 0 }}"
+                    class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors font-medium">
+                    {{ p_num }}
+                </a>
+                {% endif %}
+                {% endfor %}
+
+                {% if pagina < total_paginas %}
+                <a href="/produtos?pagina={{ pagina + 1 }}&busca={{ busca or '' }}&categoria_id={{ categoria_id or 0 }}"
+                    class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors font-medium">
+                    Próxima &raquo;
+                </a>
+                {% else %}
+                <span class="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-slate-400 cursor-not-allowed font-medium">
+                    Próxima &raquo;
+                </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Script de Funcionamento -->
     <script>
         let carrinho = [];
         let pctDesconto = {{ desconto_associado|default(10)|int }};
         let clienteAssociado = false;
 
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
         function toggleDropdown() {
-            const dropdown = document.getElementById('dropdown-options');
-            dropdown.classList.toggle('hidden');
+            document.getElementById('dropdown-options').classList.toggle('hidden');
         }
 
         function selecionarCliente(id, texto, associado) {
             document.getElementById('selected-option-text').innerText = texto;
             document.getElementById('input-cliente-id').value = id;
-            
+
             clienteAssociado = associado;
             const badge = document.getElementById('badge-desconto');
             if (clienteAssociado) {
@@ -293,7 +373,7 @@
             renderizarCarrinho();
         }
 
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             const container = document.getElementById('btn-custom-select');
             const dropdown = document.getElementById('dropdown-options');
             if (container && !container.contains(event.target) && !dropdown.contains(event.target)) {
@@ -400,7 +480,6 @@
             container.innerHTML = html;
             contItens.innerText = `${totalQtd} item(ns)`;
 
-            // Cálculos
             let valorDesconto = 0;
             if (clienteAssociado) {
                 valorDesconto = subtotal * (pctDesconto / 100);
@@ -408,7 +487,7 @@
             const total = subtotal - valorDesconto;
 
             document.getElementById('val-subtotal').innerText = `R$ ${subtotal.toFixed(2)}`;
-            
+
             const linhaDesconto = document.getElementById('linha-desconto');
             if (clienteAssociado && valorDesconto > 0) {
                 linhaDesconto.classList.remove('hidden');
@@ -419,7 +498,7 @@
             }
 
             document.getElementById('val-total').innerText = `R$ ${total.toFixed(2)}`;
-            
+
             divTotais.classList.remove('hidden');
             btnFinalizar.disabled = false;
         }
@@ -434,4 +513,5 @@
     </script>
 
 </body>
+
 </html>
