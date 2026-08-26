@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Principal — AAPM SENAI</title>
+    <title>Painel Principal — SENAI</title>
     <!-- Tailwind CSS via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -89,78 +89,89 @@
         <li></li><li></li><li></li><li></li>
     </ul>
 
-    <!-- Topbar / Navbar Principal -->
-    <header class="w-full bg-white/90 backdrop-blur-md border-b border-red-100/80 shadow-sm z-10 sticky top-0">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
-            
-            <!-- Logo & Marca -->
-            <div class="flex items-center space-x-3">
-                <a href="/" class="px-3.5 py-1.5 bg-red-600 text-white font-bold text-sm rounded-xl shadow-md inline-flex items-center justify-center tracking-wider transform transition-transform duration-300 hover:scale-105 active:scale-95 active:bg-red-700">
-                    AAPM
-                </a>
-                <span class="font-bold text-slate-900 text-base sm:text-lg hidden sm:inline">Sistema AAPM</span>
-            </div>
+    <!-- Navbar Pílula Clean com Contorno Vermelho igual ao card Olá -->
+    <header class="w-full sticky top-6 z-50 px-4">
+        <div class="max-w-5xl mx-auto bg-white/90 backdrop-blur-md rounded-full py-2.5 px-4 sm:px-6 shadow-xl border border-red-100 flex items-center justify-between gap-2">
 
-            <!-- Links de Navegação Desktop -->
-            <nav class="hidden lg:flex items-center space-x-1 font-medium text-sm text-slate-600">
-                <a href="/pdv" class="px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 hover:bg-red-50 hover:text-red-600 active:bg-red-600 active:text-white {{ 'bg-red-600 text-white shadow-sm font-semibold' if request.url.path.startswith('/pdv') else '' }}">
-                    <span>🛒</span> PDV
+            <!-- Menu Principal de Navegação (Ícones + Texto) -->
+            <nav class="flex items-center justify-center gap-1 sm:gap-2 flex-1 overflow-x-auto py-1">
+                
+                <!-- PDV -->
+                <a href="/pdv" class="px-3 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shrink-0 {{ 'bg-red-600 text-white shadow-md' if request.url.path.startswith('/pdv') else 'text-slate-500 hover:text-red-600 hover:bg-red-50' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
+                    </svg>
+                    <span>PDV</span>
                 </a>
-                <a href="/produtos" class="px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 hover:bg-red-50 hover:text-red-600 active:bg-red-600 active:text-white {{ 'bg-red-600 text-white shadow-sm font-semibold' if request.url.path.startswith('/produtos') else '' }}">
-                    <span>📦</span> Produtos
+
+                <!-- Produtos -->
+                <a href="/produtos" class="px-3 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shrink-0 {{ 'bg-red-600 text-white shadow-md' if request.url.path.startswith('/produtos') else 'text-slate-500 hover:text-red-600 hover:bg-red-50' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                    </svg>
+                    <span>Produtos</span>
                 </a>
-                <a href="/categorias" class="px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 hover:bg-red-50 hover:text-red-600 active:bg-red-600 active:text-white {{ 'bg-red-600 text-white shadow-sm font-semibold' if request.url.path.startswith('/categorias') else '' }}">
-                    <span>🏷️</span> Categorias
+
+                <!-- Categorias -->
+                <a href="/categorias" class="px-3 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shrink-0 {{ 'bg-red-600 text-white shadow-md' if request.url.path.startswith('/categorias') else 'text-slate-500 hover:text-red-600 hover:bg-red-50' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                    </svg>
+                    <span>Categorias</span>
                 </a>
-                <a href="/clientes" class="px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 hover:bg-red-50 hover:text-red-600 active:bg-red-600 active:text-white {{ 'bg-red-600 text-white shadow-sm font-semibold' if request.url.path.startswith('/clientes') else '' }}">
-                    <span>🤝</span> Clientes
+
+                <!-- Clientes -->
+                <a href="/clientes" class="px-3 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shrink-0 {{ 'bg-red-600 text-white shadow-md' if request.url.path.startswith('/clientes') else 'text-slate-500 hover:text-red-600 hover:bg-red-50' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5 5 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    <span>Clientes</span>
                 </a>
-                <a href="/movimentacoes/nova" class="px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 hover:bg-red-50 hover:text-red-600 active:bg-red-600 active:text-white {{ 'bg-red-600 text-white shadow-sm font-semibold' if request.url.path.startswith('/movimentacoes') else '' }}">
-                    <span>🔄</span> Movimentações
+
+                <!-- Movimentações -->
+                <a href="/movimentacoes/nova" class="px-3 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shrink-0 {{ 'bg-red-600 text-white shadow-md' if request.url.path.startswith('/movimentacoes') else 'text-slate-500 hover:text-red-600 hover:bg-red-50' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
+                    <span>Movimentações</span>
                 </a>
+
                 {% if not usuario or usuario.role == 'admin' %}
-                <a href="/usuarios" class="px-3 py-2 rounded-lg transition-colors flex items-center gap-1.5 hover:bg-red-50 hover:text-red-600 active:bg-red-600 active:text-white {{ 'bg-red-600 text-white shadow-sm font-semibold' if request.url.path.startswith('/usuarios') else '' }}">
-                    <span>👥</span> Usuários
+                <!-- Usuários -->
+                <a href="/usuarios" class="px-3 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shrink-0 {{ 'bg-red-600 text-white shadow-md' if request.url.path.startswith('/usuarios') else 'text-slate-500 hover:text-red-600 hover:bg-red-50' }}">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <span>Usuários</span>
                 </a>
                 {% endif %}
+
             </nav>
 
-            <!-- Perfil do Usuário & Logout -->
-            <div class="flex items-center space-x-3">
-                <div class="text-right hidden sm:block">
-                    <span class="block text-xs text-slate-500">Logado como</span>
-                    <span class="text-sm font-bold text-slate-900">{{ usuario.nome if usuario else 'Usuário' }}</span>
-                </div>
-                <a href="/auth/logout" class="px-3 py-1.5 text-xs sm:text-sm font-semibold text-red-600 hover:text-white bg-red-50 hover:bg-red-600 active:bg-red-700 active:text-white border border-red-200 hover:border-red-600 rounded-xl transition-all duration-200 shadow-sm">
-                    Sair
+            <!-- Botão Sair no Canto Direito -->
+            <div class="pl-2 border-l border-red-100 shrink-0">
+                <a href="/auth/logout" title="Sair" class="p-2 rounded-full text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors flex items-center gap-1.5 font-bold text-xs">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                    <span class="hidden sm:inline">Sair</span>
                 </a>
             </div>
-        </div>
 
-        <!-- Menu Navegação Mobile -->
-        <div class="lg:hidden border-t border-slate-100 bg-white/95 px-4 py-2 flex flex-wrap gap-1 justify-around text-xs font-semibold text-slate-700">
-            <a href="/pdv" class="px-2 py-1.5 rounded-md hover:bg-red-50 hover:text-red-600 active:bg-red-600 active:text-white {{ 'bg-red-600 text-white' if request.url.path.startswith('/pdv') else '' }}">🛒 PDV</a>
-            <a href="/produtos" class="px-2 py-1.5 rounded-md hover:bg-red-50 hover:text-red-600 active:bg-red-600 active:text-white {{ 'bg-red-600 text-white' if request.url.path.startswith('/produtos') else '' }}">📦 Produtos</a>
-            <a href="/categorias" class="px-2 py-1.5 rounded-md hover:bg-red-50 hover:text-red-600 active:bg-red-600 active:text-white {{ 'bg-red-600 text-white' if request.url.path.startswith('/categorias') else '' }}">🏷️ Categorias</a>
-            <a href="/clientes" class="px-2 py-1.5 rounded-md hover:bg-red-50 hover:text-red-600 active:bg-red-600 active:text-white {{ 'bg-red-600 text-white' if request.url.path.startswith('/clientes') else '' }}">🤝 Clientes</a>
-            <a href="/movimentacoes/nova" class="px-2 py-1.5 rounded-md hover:bg-red-50 hover:text-red-600 active:bg-red-600 active:text-white {{ 'bg-red-600 text-white' if request.url.path.startswith('/movimentacoes') else '' }}">🔄 Movimentações</a>
-            {% if not usuario or usuario.role == 'admin' %}
-            <a href="/usuarios" class="px-2 py-1.5 rounded-md hover:bg-red-50 hover:text-red-600 active:bg-red-600 active:text-white {{ 'bg-red-600 text-white' if request.url.path.startswith('/usuarios') else '' }}">👥 Usuários</a>
-            {% endif %}
         </div>
     </header>
 
     <!-- Conteúdo Principal Dashboard -->
-    <main class="flex-1 max-w-5xl w-full mx-auto px-6 py-8 space-y-8 z-10">
+    <main class="flex-1 max-w-5xl w-full mx-auto px-6 mt-16 mb-8 space-y-8 z-10">
 
-        <!-- Cartão de Boas-Vindas / Perfil -->
+        <!-- Cartão de Boas-Vindas / Perfil (Com Borda Vermelha) -->
         <section class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-red-100 p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div class="space-y-1">
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                     Olá, {{ usuario.nome if usuario else 'Usuário' }}!
                 </h1>
                 <p class="text-slate-500 text-sm">
-                    Bem-vindo ao painel do sistema de controle de estoque da AAPM. Utilize o menu superior para navegar entre os módulos.
+                    Bem-vindo ao painel do sistema de controle de estoque. Utilize o menu superior para navegar entre os módulos.
                 </p>
             </div>
 
