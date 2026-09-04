@@ -1,313 +1,78 @@
-<!-- templates/clientes/index.html -->
+<!-- template/clientes/index.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientes — AAPM SENAI</title>
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+<head><meta charset="UTF-8"><title>Clientes — AAPM SENAI</title></head>
+<body>
+    <h1>Clientes</h1>
 
-    <style>
-        /* Container do Fundo Animado */
-        .cubes-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0;
-            margin: 0;
-            padding: 0;
-        }
+    {% if request.query_params.get('criado') == 'ok' %}
+        <p style="color:green">Cliente cadastrado!</p>
+    {% endif %}
+    {% if request.query_params.get('editado') == 'ok' %}
+        <p style="color:green">Cliente atualizado!</p>
+    {% endif %}
 
-        /* Estilo base de cada cubo */
-        .cubes-bg li {
-            position: absolute;
-            list-style: none;
-            display: block;
-            width: 20px;
-            height: 20px;
-            background: rgba(220, 38, 38, 0.12);
-            border: 1px solid rgba(220, 38, 38, 0.25);
-            border-radius: 12px;
-            bottom: -150px;
-            animation: moveCubes 22s infinite ease-in-out;
-        }
+    <p>Associados ativos: <strong>{{ total_associados }}</strong></p>
 
-        /* Animação CSS */
-        @keyframes moveCubes {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.8;
-            }
-            50% {
-                transform: translateY(-50vh) rotate(180deg);
-            }
-            70% {
-                transform: translateY(-35vh) rotate(240deg);
-            }
-            100% {
-                transform: translateY(-105vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Distribuição dos 16 cubos */
-        .cubes-bg li:nth-child(1)  { left: 25%; width: 80px; height: 80px; animation-delay: -2s;  animation-duration: 26s; }
-        .cubes-bg li:nth-child(2)  { left: 10%; width: 30px; height: 30px; animation-delay: -7s;  animation-duration: 20s; }
-        .cubes-bg li:nth-child(3)  { left: 70%; width: 45px; height: 45px; animation-delay: -12s; animation-duration: 22s; }
-        .cubes-bg li:nth-child(4)  { left: 40%; width: 60px; height: 60px; animation-delay: -5s;  animation-duration: 30s; }
-        .cubes-bg li:nth-child(5)  { left: 65%; width: 25px; height: 25px; animation-delay: -15s; animation-duration: 18s; }
-        .cubes-bg li:nth-child(6)  { left: 85%; width: 90px; height: 90px; animation-delay: -8s;  animation-duration: 28s; }
-        .cubes-bg li:nth-child(7)  { left: 55%; width: 50px; height: 50px; animation-delay: -18s; animation-duration: 24s; }
-        .cubes-bg li:nth-child(8)  { left: 15%; width: 20px; height: 20px; animation-delay: -3s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(9)  { left: 3%;  width: 40px; height: 40px; animation-delay: -10s; animation-duration: 32s; }
-        .cubes-bg li:nth-child(10) { left: 92%; width: 70px; height: 70px; animation-delay: -14s; animation-duration: 25s; }
-        .cubes-bg li:nth-child(11) { left: 32%; width: 35px; height: 35px; animation-delay: -9s;  animation-duration: 23s; }
-        .cubes-bg li:nth-child(12) { left: 48%; width: 75px; height: 75px; animation-delay: -16s; animation-duration: 27s; }
-        .cubes-bg li:nth-child(13) { left: 78%; width: 20px; height: 20px; animation-delay: -4s;  animation-duration: 19s; }
-        .cubes-bg li:nth-child(14) { left: 20%; width: 55px; height: 55px; animation-delay: -11s; animation-duration: 29s; }
-        .cubes-bg li:nth-child(15) { left: 80%; width: 40px; height: 40px; animation-delay: -1s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(16) { left: 60%; width: 30px; height: 30px; animation-delay: -13s; animation-duration: 25s; }
-    </style>
-</head>
-<body class="bg-red-50/40 min-h-screen flex flex-col items-center justify-start p-4 sm:p-6 font-sans text-slate-800 relative">
-
-    <!-- Fundo Animado com 16 Cubos -->
-    <ul class="cubes-bg">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
-
-    <!-- Container Principal -->
-    <main class="w-full max-w-5xl bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-red-100/80 p-6 sm:p-8 space-y-6 my-6 z-10">
-        
-        <!-- Topo: Voltar ao Dashboard e Logo -->
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-            <a href="/" class="inline-flex items-center text-sm font-semibold text-slate-500 hover:text-red-600 transition-colors">
-                ← Dashboard
-            </a>
-            <div class="px-3 py-1 bg-red-600 text-white font-bold text-xs rounded-xl shadow-sm tracking-wider">
-                AAPM
-            </div>
-        </div>
-
-        <!-- Alertas de Sucesso -->
-        {% if request.query_params.get('criado') == 'ok' %}
-            <div class="p-4 bg-emerald-50/90 border border-emerald-200 text-emerald-800 text-sm font-medium rounded-xl shadow-sm flex items-center justify-between">
-                <span>✓ Cliente cadastrado com sucesso!</span>
-            </div>
+    <form method="get" action="/clientes">
+        <input type="text" name="busca"
+               placeholder="Buscar por nome ou matrícula..."
+               value="{{ busca }}">
+        <label>
+            <input type="checkbox" name="apenas_associados" value="true"
+                {{ 'checked' if apenas_associados }}>
+            Apenas associados
+        </label>
+        <button type="submit">Filtrar</button>
+        {% if busca or apenas_associados %}
+            <a href="/clientes">Limpar</a>
         {% endif %}
-        {% if request.query_params.get('editado') == 'ok' %}
-            <div class="p-4 bg-emerald-50/90 border border-emerald-200 text-emerald-800 text-sm font-medium rounded-xl shadow-sm flex items-center justify-between">
-                <span>✓ Dados do cliente atualizados com sucesso!</span>
-            </div>
-        {% endif %}
+    </form>
 
-        <!-- Cabeçalho Principal e Indicador de Associados -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Gestão de Clientes</h1>
-                <p class="text-sm text-slate-500 mt-0.5">Gerencie os clientes e associados da cantina</p>
-            </div>
+    <a href="/clientes/novo">+ Novo cliente</a>
 
-            <!-- Card de Estatística -->
-            <div class="inline-flex items-center gap-3 bg-red-50/80 border border-red-100 px-4 py-2.5 rounded-xl text-sm self-start md:self-auto">
-                <span class="text-slate-600 font-medium">Associados Ativos:</span>
-                <span class="px-2.5 py-0.5 bg-red-600 text-white font-bold rounded-lg text-xs">
-                    {{ total_associados }}
-                </span>
-            </div>
-        </div>
-
-        <!-- Barra de Ações: Filtro e Botão Novo -->
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pt-2">
-            
-            <!-- Formulário de Filtro e Busca -->
-            <form method="get" action="/clientes" class="flex flex-wrap items-center gap-2.5 flex-1">
-                <div class="relative flex-1 min-w-[220px]">
-                    <input type="text" 
-                           name="busca"
-                           placeholder="Buscar por nome ou matrícula..."
-                           value="{{ busca or '' }}"
-                           class="w-full pl-9 pr-4 py-2 bg-slate-50/80 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all text-sm text-slate-900">
-                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                </div>
-
-                <label class="flex items-center gap-2 px-3 py-2 bg-slate-50/80 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100/80 transition-colors text-xs font-semibold text-slate-700 h-[40px]">
-                    <input type="checkbox" 
-                           name="apenas_associados" 
-                           value="true"
-                           {{ 'checked' if apenas_associados }}
-                           class="h-4 w-4 text-red-600 rounded border-slate-300 focus:ring-red-500">
-                    Apenas associados
-                </label>
-
-                <button type="submit" 
-                        class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-semibold rounded-xl text-xs transition-all shadow-sm h-[40px]">
-                    Filtrar
-                </button>
-
-                {% if busca or apenas_associados %}
-                    <a href="/clientes" 
-                       class="px-3 py-2 text-slate-500 hover:text-red-600 font-semibold text-xs transition-colors flex items-center h-[40px]">
-                        Limpar
-                    </a>
-                {% endif %}
-            </form>
-
-            <!-- Botão Novo Cliente -->
-            <a href="/clientes/novo" 
-               class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 text-sm whitespace-nowrap hover:-translate-y-0.5">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                Novo cliente
-            </a>
-        </div>
-
-        <!-- Tabela de Clientes -->
-        <div class="overflow-x-auto rounded-xl border border-slate-200/80 shadow-sm bg-white/60 backdrop-blur-sm">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-slate-100/80 text-slate-600 text-xs font-bold uppercase tracking-wider border-b border-slate-200">
-                        <th class="py-3.5 px-4">Nome</th>
-                        <th class="py-3.5 px-4">Matrícula</th>
-                        <th class="py-3.5 px-4">Telefone</th>
-                        <th class="py-3.5 px-4">Associado</th>
-                        <th class="py-3.5 px-4">Status</th>
-                        <th class="py-3.5 px-4 text-right">Ações</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100 text-sm">
-                    {% for c in clientes %}
-                    <tr class="hover:bg-slate-50/80 transition-colors">
-                        <td class="py-3.5 px-4 font-semibold text-slate-900">
-                            {{ c.nome }}
-                        </td>
-                        <td class="py-3.5 px-4 text-slate-600 font-mono text-xs">
-                            {{ c.matricula or "—" }}
-                        </td>
-                        <td class="py-3.5 px-4 text-slate-600">
-                            {{ c.telefone or "—" }}
-                        </td>
-                        <td class="py-3.5 px-4">
-                            {% if c.is_associado %}
-                                <span class="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-100 text-emerald-800 font-bold text-xs rounded-lg border border-emerald-200">
-                                    ✓ Sim <span class="font-normal text-[10px] text-emerald-700">(10% desc.)</span>
-                                </span>
-                            {% else %}
-                                <span class="text-slate-400 text-xs font-medium">Não</span>
-                            {% endif %}
-                        </td>
-                        <td class="py-3.5 px-4">
-                            {% if c.ativo %}
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-                                    Ativo
-                                </span>
-                            {% else %}
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200">
-                                    Inativo
-                                </span>
-                            {% endif %}
-                        </td>
-                        <td class="py-3.5 px-4 text-right">
-                            <div class="flex items-center justify-end gap-3">
-                                <a href="/clientes/{{ c.id }}/editar" 
-                                   class="font-semibold text-slate-600 hover:text-red-600 transition-colors text-xs">
-                                    Editar
-                                </a>
-                                <form action="/clientes/{{ c.id }}/toggle-ativo" 
-                                      method="post" 
-                                      class="inline">
-                                    <button type="submit" 
-                                            class="font-semibold text-xs transition-colors {{ 'text-red-600 hover:text-red-800' if c.ativo else 'text-emerald-600 hover:text-emerald-800' }}">
-                                        {{ "Desativar" if c.ativo else "Ativar" }}
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-
-                    {% if not clientes %}
-                    <tr>
-                        <td colspan="6" class="py-8 text-center text-slate-400 text-sm">
-                            Nenhum cliente encontrado.
-                        </td>
-                    </tr>
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Matrícula</th>
+                <th>Telefone</th>
+                <th>Associado</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in clientes %}
+            <tr>
+                <td>{{ c.nome }}</td>
+                <td>{{ c.matricula or "—" }}</td>
+                <td>{{ c.telefone or "—" }}</td>
+                <td>
+                    {% if c.is_associado %}
+                        <span style="color:green">✓ Sim (10% desc.)</span>
+                    {% else %}
+                        Não
                     {% endif %}
-                </tbody>
-            </table>
-        </div>
+                </td>
+                <td>{{ "Ativo" if c.ativo else "Inativo" }}</td>
+                <td>
+                    <a href="/clientes/{{ c.id }}/editar">Editar</a>
+                    <form action="/clientes/{{ c.id }}/toggle-ativo"
+                          method="post" style="display:inline">
+                        <button type="submit">
+                            {{ "Desativar" if c.ativo else "Ativar" }}
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not clientes %}
+            <tr><td colspan="6" style="text-align:center">Nenhum cliente.</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
 
-        <!-- Bloco de Paginação -->
-        {% if total_paginas and total_paginas > 1 %}
-        <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-600">
-            <div>
-                Página <span class="font-bold text-slate-900">{{ pagina }}</span> de <span class="font-bold text-slate-900">{{ total_paginas }}</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-                {% if pagina > 1 %}
-                <a href="/clientes?pagina={{ pagina - 1 }}&busca={{ busca or '' }}{{ '&apenas_associados=true' if apenas_associados else '' }}"
-                   class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors font-medium">
-                    &laquo; Anterior
-                </a>
-                {% else %}
-                <span class="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-slate-400 cursor-not-allowed font-medium">
-                    &laquo; Anterior
-                </span>
-                {% endif %}
-
-                {% for p_num in range(1, total_paginas + 1) %}
-                {% if p_num == pagina %}
-                <span class="px-3 py-1.5 bg-red-600 text-white font-bold rounded-lg shadow-sm">
-                    {{ p_num }}
-                </span>
-                {% else %}
-                <a href="/clientes?pagina={{ p_num }}&busca={{ busca or '' }}{{ '&apenas_associados=true' if apenas_associados else '' }}"
-                   class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors font-medium">
-                    {{ p_num }}
-                </a>
-                {% endif %}
-                {% endfor %}
-
-                {% if pagina < total_paginas %}
-                <a href="/clientes?pagina={{ pagina + 1 }}&busca={{ busca or '' }}{{ '&apenas_associados=true' if apenas_associados else '' }}"
-                   class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-slate-700 hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-colors font-medium">
-                    Próxima &raquo;
-                </a>
-                {% else %}
-                <span class="px-3 py-1.5 bg-slate-100 border border-slate-200 rounded-lg text-slate-400 cursor-not-allowed font-medium">
-                    Próxima &raquo;
-                </span>
-                {% endif %}
-            </div>
-        </div>
-        {% endif %}
-
-    </main>
-
+    <p><a href="/">← Dashboard</a></p>
 </body>
 </html>

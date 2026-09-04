@@ -3,211 +3,46 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ produto.nome }} — AAPM SENAI</title>
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-        /* Container do Fundo Animado */
-        .cubes-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0; /* Fica no fundo */
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Estilo base de cada cubo */
-        .cubes-bg li {
-            position: absolute;
-            list-style: none;
-            display: block;
-            width: 20px;
-            height: 20px;
-            background: rgba(220, 38, 38, 0.12); /* Vermelho translúcido */
-            border: 1px solid rgba(220, 38, 38, 0.25);
-            border-radius: 12px; /* Cantos arredondados */
-            bottom: -150px;
-            animation: moveCubes 22s infinite ease-in-out;
-        }
-
-        /* Animação CSS: Subindo, girando e descendo */
-        @keyframes moveCubes {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.8;
-            }
-            50% {
-                transform: translateY(-50vh) rotate(180deg);
-            }
-            70% {
-                transform: translateY(-35vh) rotate(240deg);
-            }
-            100% {
-                transform: translateY(-105vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Distribuição dos 16 cubos com posições e tempos variados */
-        .cubes-bg li:nth-child(1)  { left: 25%; width: 80px; height: 80px; animation-delay: -2s;  animation-duration: 26s; }
-        .cubes-bg li:nth-child(2)  { left: 10%; width: 30px; height: 30px; animation-delay: -7s;  animation-duration: 20s; }
-        .cubes-bg li:nth-child(3)  { left: 70%; width: 45px; height: 45px; animation-delay: -12s; animation-duration: 22s; }
-        .cubes-bg li:nth-child(4)  { left: 40%; width: 60px; height: 60px; animation-delay: -5s;  animation-duration: 30s; }
-        .cubes-bg li:nth-child(5)  { left: 65%; width: 25px; height: 25px; animation-delay: -15s; animation-duration: 18s; }
-        .cubes-bg li:nth-child(6)  { left: 85%; width: 90px; height: 90px; animation-delay: -8s;  animation-duration: 28s; }
-        .cubes-bg li:nth-child(7)  { left: 55%; width: 50px; height: 50px; animation-delay: -18s; animation-duration: 24s; }
-        .cubes-bg li:nth-child(8)  { left: 15%; width: 20px; height: 20px; animation-delay: -3s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(9)  { left: 3%;  width: 40px; height: 40px; animation-delay: -10s; animation-duration: 32s; }
-        .cubes-bg li:nth-child(10) { left: 92%; width: 70px; height: 70px; animation-delay: -14s; animation-duration: 25s; }
-        .cubes-bg li:nth-child(11) { left: 32%; width: 35px; height: 35px; animation-delay: -9s;  animation-duration: 23s; }
-        .cubes-bg li:nth-child(12) { left: 48%; width: 75px; height: 75px; animation-delay: -16s; animation-duration: 27s; }
-        .cubes-bg li:nth-child(13) { left: 78%; width: 20px; height: 20px; animation-delay: -4s;  animation-duration: 19s; }
-        .cubes-bg li:nth-child(14) { left: 20%; width: 55px; height: 55px; animation-delay: -11s; animation-duration: 29s; }
-        .cubes-bg li:nth-child(15) { left: 80%; width: 40px; height: 40px; animation-delay: -1s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(16) { left: 60%; width: 30px; height: 30px; animation-delay: -13s; animation-duration: 25s; }
-    </style>
 </head>
-<body class="bg-red-50/40 min-h-screen flex flex-col font-sans text-slate-800 relative">
+<body>
+    {% if request.query_params.get('editado') == 'ok' %}
+        <p style="color:green">Produto atualizado com sucesso!</p>
+    {% endif %}
 
-    <!-- Fundo Animado com 16 Cubos -->
-    <ul class="cubes-bg">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
+    <img src="{{ produto.imagem_url }}"
+         alt="{{ produto.nome }}"
+         width="200"
+         style="object-fit:cover">
 
-    <!-- Header / Navbar -->
-    <header class="w-full bg-white/90 backdrop-blur-md border-b border-red-100/80 shadow-sm z-10">
-        <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="px-3.5 py-1.5 bg-red-600 text-white font-bold text-sm rounded-xl shadow-md tracking-wider flex items-center justify-center transform transition-transform duration-300 hover:scale-105">
-                    AAPM
-                </div>
-                <span class="font-bold text-slate-900 text-base">Sistema de Estoque</span>
-            </div>
-        </div>
-    </header>
+    <h1>{{ produto.nome }}</h1>
 
-    <!-- Conteúdo Principal -->
-    <main class="flex-1 max-w-4xl w-full mx-auto px-6 py-8 space-y-6 z-10">
+    <p>Categoria: {{ produto.categoria.nome if produto.categoria else "—" }}</p>
 
-        <!-- Mensagens de Alerta (Sucesso) -->
-        {% if request.query_params.get('editado') == 'ok' %}
-            <div class="p-4 bg-emerald-50/90 backdrop-blur-md border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
-                <span>✓</span> Produto atualizado com sucesso!
-            </div>
-        {% endif %}
+    <table border="1" cellpadding="8">
+        <tr><td><strong>Preço</strong></td>
+            <td>R$ {{ "%.2f"|format(produto.preco) }}</td></tr>
+        <tr><td><strong>Estoque atual</strong></td>
+            <td>{{ produto.estoque_atual }}</td></tr>
+    </table>
 
-        {% if request.query_params.get('movimentacao') == 'ok' %}
-            <div class="p-4 bg-emerald-50/90 backdrop-blur-md border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
-                <span>✓</span> Movimentação registrada com sucesso!
-            </div>
-        {% endif %}
+    {% if request.query_params.get('movimentacao') == 'ok' %}
+        <p style="color:green">Movimentação registrada com sucesso!</p>
+    {% endif %}
 
-        <!-- Card Principal do Produto -->
-        <div class="bg-white/90 backdrop-blur-md rounded-3xl shadow-xl border border-red-100/80 overflow-hidden">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 p-6 md:p-8 items-start">
-                
-                <!-- Imagem do Produto -->
-                <div class="md:col-span-5 flex justify-center">
-                    <div class="w-full aspect-square max-w-xs bg-slate-100/80 rounded-2xl overflow-hidden border border-slate-200/60 shadow-inner flex items-center justify-center relative">
-                        {% if produto.imagem_url %}
-                            <img src="{{ produto.imagem_url }}"
-                                 alt="{{ produto.nome }}"
-                                 class="w-full h-full object-cover">
-                        {% else %}
-                            <div class="text-slate-400 text-xs font-medium">Sem imagem</div>
-                        {% endif %}
-                    </div>
-                </div>
+    <!-- Links de movimentação -->
+    <a href="/movimentacoes/nova?produto_id={{ produto.id }}">
+        + Registrar movimentação
+    </a>
+    &nbsp;|&nbsp;
+    <a href="/movimentacoes/produto/{{ produto.id }}">
+        Ver histórico completo
+    </a>
 
-                <!-- Informações e Detalhes -->
-                <div class="md:col-span-7 flex flex-col justify-between space-y-6">
-                    <div>
-                        <!-- Categoria Badge -->
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-100 mb-3">
-                            {{ produto.categoria.nome if produto.categoria else "—" }}
-                        </span>
+    {% if usuario.role == 'admin' %}
+        <a href="/produtos/{{ produto.id }}/editar">Editar</a>
+    {% endif %}
 
-                        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                            {{ produto.nome }}
-                        </h1>
-                    </div>
-
-                    <!-- Cards Estatísticos -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-100">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Preço</span>
-                            <p class="text-xl sm:text-2xl font-extrabold text-slate-900">
-                                R$ {{ "%.2f"|format(produto.preco) }}
-                            </p>
-                        </div>
-                        <div class="bg-slate-50/80 p-4 rounded-2xl border border-slate-100">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 block mb-1">Estoque atual</span>
-                            <p class="text-xl sm:text-2xl font-extrabold text-slate-900">
-                                {{ produto.estoque_atual }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <!-- Botões de Ação Principais -->
-                    <div class="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-100">
-                        <a href="/movimentacoes/nova?produto_id={{ produto.id }}" 
-                           class="flex-1 min-w-[180px] inline-flex items-center justify-center px-4 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5">
-                            + Registrar movimentação
-                        </a>
-                        <a href="/movimentacoes/produto/{{ produto.id }}" 
-                           class="flex-1 min-w-[180px] inline-flex items-center justify-center px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm rounded-xl transition-all duration-200">
-                            Ver histórico completo
-                        </a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Ações do Administrador e Navegação Secundária -->
-        <div class="flex items-center justify-between pt-2">
-            <a href="/produtos" class="text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors">
-                ← Voltar
-            </a>
-
-            {% if usuario.role == 'admin' %}
-                <a href="/produtos/{{ produto.id }}/editar" 
-                   class="inline-flex items-center gap-1.5 px-4 py-2 bg-white/90 backdrop-blur-md border border-slate-200/80 hover:border-slate-300 text-slate-700 hover:text-slate-900 font-medium text-sm rounded-xl shadow-sm transition-all hover:-translate-y-0.5">
-                    ✏️ Editar produto
-                </a>
-            {% endif %}
-        </div>
-
-    </main>
-
-    <!-- Rodapé -->
-    <footer class="w-full bg-white/80 backdrop-blur-md border-t border-red-100/80 py-4 text-center text-xs text-slate-400 z-10 font-medium mt-auto">
-        &copy; 2026 Senai
-    </footer>
-
+    <a href="/produtos">← Voltar</a>
 </body>
 </html>

@@ -3,231 +3,77 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Categorias — AAPM SENAI</title>
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-        /* Container do Fundo Animado */
-        .cubes-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0; /* Fica no fundo */
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Estilo base de cada cubo */
-        .cubes-bg li {
-            position: absolute;
-            list-style: none;
-            display: block;
-            width: 20px;
-            height: 20px;
-            background: rgba(220, 38, 38, 0.12); /* Vermelho translúcido */
-            border: 1px solid rgba(220, 38, 38, 0.25);
-            border-radius: 12px; /* Cantos arredondados */
-            bottom: -150px;
-            animation: moveCubes 22s infinite ease-in-out;
-        }
-
-        /* Animação CSS: Subindo, girando e descendo */
-        @keyframes moveCubes {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.8;
-            }
-            50% {
-                transform: translateY(-50vh) rotate(180deg);
-            }
-            70% {
-                transform: translateY(-35vh) rotate(240deg);
-            }
-            100% {
-                transform: translateY(-105vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Distribuição dos 16 cubos com posições e tempos variados */
-        .cubes-bg li:nth-child(1)  { left: 25%; width: 80px; height: 80px; animation-delay: -2s;  animation-duration: 26s; }
-        .cubes-bg li:nth-child(2)  { left: 10%; width: 30px; height: 30px; animation-delay: -7s;  animation-duration: 20s; }
-        .cubes-bg li:nth-child(3)  { left: 70%; width: 45px; height: 45px; animation-delay: -12s; animation-duration: 22s; }
-        .cubes-bg li:nth-child(4)  { left: 40%; width: 60px; height: 60px; animation-delay: -5s;  animation-duration: 30s; }
-        .cubes-bg li:nth-child(5)  { left: 65%; width: 25px; height: 25px; animation-delay: -15s; animation-duration: 18s; }
-        .cubes-bg li:nth-child(6)  { left: 85%; width: 90px; height: 90px; animation-delay: -8s;  animation-duration: 28s; }
-        .cubes-bg li:nth-child(7)  { left: 55%; width: 50px; height: 50px; animation-delay: -18s; animation-duration: 24s; }
-        .cubes-bg li:nth-child(8)  { left: 15%; width: 20px; height: 20px; animation-delay: -3s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(9)  { left: 3%;  width: 40px; height: 40px; animation-delay: -10s; animation-duration: 32s; }
-        .cubes-bg li:nth-child(10) { left: 92%; width: 70px; height: 70px; animation-delay: -14s; animation-duration: 25s; }
-        .cubes-bg li:nth-child(11) { left: 32%; width: 35px; height: 35px; animation-delay: -9s;  animation-duration: 23s; }
-        .cubes-bg li:nth-child(12) { left: 48%; width: 75px; height: 75px; animation-delay: -16s; animation-duration: 27s; }
-        .cubes-bg li:nth-child(13) { left: 78%; width: 20px; height: 20px; animation-delay: -4s;  animation-duration: 19s; }
-        .cubes-bg li:nth-child(14) { left: 20%; width: 55px; height: 55px; animation-delay: -11s; animation-duration: 29s; }
-        .cubes-bg li:nth-child(15) { left: 80%; width: 40px; height: 40px; animation-delay: -1s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(16) { left: 60%; width: 30px; height: 30px; animation-delay: -13s; animation-duration: 25s; }
-    </style>
 </head>
-<body class="bg-red-50/40 min-h-screen flex flex-col font-sans text-slate-800 relative">
+<body>
+    <h1>Categorias</h1>
 
-    <!-- Fundo Animado com 16 Cubos -->
-    <ul class="cubes-bg">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
+    {% if request.query_params.get('criado') == 'ok' %}
+        <p style="color:green">Categoria criada com sucesso!</p>
+    {% endif %}
 
-    <!-- Header / Navbar -->
-    <header class="w-full bg-white/90 backdrop-blur-md border-b border-red-100/80 shadow-sm z-10">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="px-3.5 py-1.5 bg-red-600 text-white font-bold text-sm rounded-xl shadow-md tracking-wider flex items-center justify-center transform transition-transform duration-300 hover:scale-105">
-                    AAPM
-                </div>
-                <span class="font-bold text-slate-900 text-lg">Sistema de Estoque</span>
-            </div>
-        </div>
-    </header>
+    {% if request.query_params.get('editado') == 'ok' %}
+        <p style="color:green">Categoria atualizada com sucesso!</p>
+    {% endif %}
 
-    <!-- Conteúdo Principal -->
-    <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-8 space-y-6 z-10">
+    {% if request.query_params.get('erro') == 'produtos_vinculados' %}
+        <p style="color:red">
+            Não é possível desativar "{{ request.query_params.get('categoria') }}"
+            pois ela possui produtos ativos vinculados.
+            Desative ou mova os produtos antes.
+        </p>
+    {% endif %}
 
-        <!-- Mensagens de Alerta (Sucesso / Erro) -->
-        {% if request.query_params.get('criado') == 'ok' %}
-            <div class="p-4 bg-emerald-50/90 backdrop-blur-md border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
-                <span>✓</span> Categoria criada com sucesso!
-            </div>
-        {% endif %}
+    <a href="/categorias/nova">+ Nova categoria</a>
 
-        {% if request.query_params.get('editado') == 'ok' %}
-            <div class="p-4 bg-emerald-50/90 backdrop-blur-md border border-emerald-200 text-emerald-800 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
-                <span>✓</span> Categoria atualizada com sucesso!
-            </div>
-        {% endif %}
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Produtos ativos</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in categorias %}
+            <tr>
+                <td>{{ c.nome }}</td>
 
-        {% if request.query_params.get('erro') == 'produtos_vinculados' %}
-            <div class="p-4 bg-red-50/90 backdrop-blur-md border border-red-200 text-red-700 text-sm font-medium rounded-2xl flex items-center gap-2 shadow-sm">
-                <span>⚠️</span> Não é possível desativar "{{ request.query_params.get('categoria') }}" pois ela possui produtos ativos vinculados. Desative ou mova os produtos antes.
-            </div>
-        {% endif %}
+                <!--
+                    c.produtos vem do relationship definido no model.
+                    Filtramos em Python para contar apenas os ativos.
+                -->
+                <td>
+                    {{ c.produtos | selectattr('ativo') | list | length }}
+                </td>
 
-        <!-- Cabeçalho da Seção -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Categorias</h1>
-                <p class="text-slate-500 text-sm mt-1">Gerencie os agrupamentos de produtos do estoque.</p>
-            </div>
+                <td>{{ "Ativa" if c.ativo else "Inativa" }}</td>
 
-            <a href="/categorias/nova" 
-               class="inline-flex items-center justify-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5">
-                + Nova categoria
-            </a>
-        </div>
+                <td>
+                    <a href="/categorias/{{ c.id }}/editar">Editar</a>
 
-        <!-- Tabela de Categorias -->
-        <div class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-red-100/80 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-slate-600">
-                    <thead class="bg-slate-50/80 border-b border-slate-200 text-slate-700 uppercase font-semibold text-xs tracking-wider">
-                        <tr>
-                            <th class="px-6 py-4">Nome</th>
-                            <th class="px-6 py-4">Produtos ativos</th>
-                            <th class="px-6 py-4">Status</th>
-                            <th class="px-6 py-4 text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        {% for c in categorias %}
-                        <tr class="hover:bg-slate-50/80 transition-colors">
-                            <!-- Nome -->
-                            <td class="px-6 py-4 font-semibold text-slate-900 whitespace-nowrap">
-                                {{ c.nome }}
-                            </td>
+                    <form action="/categorias/{{ c.id }}/toggle-ativo"
+                          method="post"
+                          style="display:inline">
+                        <button type="submit">
+                            {{ "Desativar" if c.ativo else "Ativar" }}
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
 
-                            <!-- Produtos Ativos -->
-                            <td class="px-6 py-4 text-slate-600 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                                    {{ c.produtos | selectattr('ativo') | list | length }} item(ns)
-                                </span>
-                            </td>
+            {% if not categorias %}
+            <tr>
+                <td colspan="4" style="text-align:center">
+                    Nenhuma categoria cadastrada.
+                </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
 
-                            <!-- Status Badge -->
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold
-                                    {{ 'bg-emerald-50 text-emerald-700 border border-emerald-200' if c.ativo else 'bg-slate-100 text-slate-500 border border-slate-200' }}">
-                                    <span class="w-1.5 h-1.5 rounded-full {{ 'bg-emerald-500' if c.ativo else 'bg-slate-400' }}"></span>
-                                    {{ "Ativa" if c.ativo else "Inativa" }}
-                                </span>
-                            </td>
-
-                            <!-- Ações -->
-                            <td class="px-6 py-4 text-right whitespace-nowrap">
-                                <div class="inline-flex items-center justify-end gap-2">
-                                    <a href="/categorias/{{ c.id }}/editar" 
-                                       class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs rounded-lg transition-colors">
-                                        Editar
-                                    </a>
-
-                                    <form action="/categorias/{{ c.id }}/toggle-ativo"
-                                          method="post"
-                                          class="inline">
-                                        <button type="submit" 
-                                                class="px-3 py-1.5 font-medium text-xs rounded-lg transition-colors border
-                                                    {{ 'bg-amber-50 hover:bg-amber-100 text-amber-700 border-amber-200' if c.ativo else 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200' }}">
-                                            {{ "Desativar" if c.ativo else "Ativar" }}
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-
-                        {% if not categorias %}
-                        <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-slate-400">
-                                Nenhuma categoria cadastrada.
-                            </td>
-                        </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Link Voltar -->
-        <div class="pt-2">
-            <a href="/" class="text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors">
-                ← Dashboard
-            </a>
-        </div>
-
-    </main>
-
-    <!-- Rodapé -->
-    <footer class="w-full bg-white/80 backdrop-blur-md border-t border-red-100/80 py-4 text-center text-xs text-slate-400 z-10 font-medium mt-auto">
-        &copy; 2026 Senai
-    </footer>
-
+    <p><a href="/">← Dashboard</a></p>
 </body>
 </html>

@@ -1,193 +1,392 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Principal — SENAI</title>
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
+    <title>{% block title %}AAPM System{% endblock %}</title>
     <style>
-        /* Container do Fundo Animado */
-        .cubes-bg {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #2554d7;
+            position: relative;
+            overflow-x: hidden;
+            color: #ffffff;
+            display: flex;
+            padding: 20px;
+        }
+
+        /* --- BACKGROUND WAVES ANIMATION --- */
+        .background-waves {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden;
-            z-index: 0;
-            margin: 0;
-            padding: 0;
+            z-index: 1;
             pointer-events: none;
         }
 
-        /* Estilo base de cada cubo */
-        .cubes-bg li {
-            position: absolute;
+        .wave {
+            transform-origin: center;
+            will-change: transform;
+        }
+
+        .wave-left-outer {
+            animation: moveCircleLeftSmooth 8s ease-in-out infinite alternate;
+        }
+
+        .wave-left-inner {
+            animation: moveCircleLeftSmooth 10s ease-in-out infinite alternate-reverse;
+        }
+
+        .wave-right {
+            animation: moveWaveRightSmooth 9s ease-in-out infinite alternate;
+        }
+
+        @keyframes moveCircleLeftSmooth {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(45px, -30px) scale(1.08) rotate(3.5deg); }
+            100% { transform: translate(-30px, 35px) scale(0.94) rotate(-2.5deg); }
+        }
+
+        @keyframes moveWaveRightSmooth {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(-50px, 30px) scale(1.06) rotate(-3.5deg); }
+            100% { transform: translate(35px, -35px) scale(0.95) rotate(2deg); }
+        }
+
+        /* --- SIDEBAR MACOS STYLE --- */
+        .sidebar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            bottom: 20px;
+            width: 250px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Estado Retraído */
+        .sidebar.collapsed {
+            width: 78px;
+        }
+
+        /* Topo da Sidebar (Bolinhas do Mac + Título) */
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            padding: 0 6px;
+        }
+
+        .mac-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-close { background-color: #ff5f56; }
+        .dot-minimize { background-color: #ffbd2e; }
+        .dot-expand { background-color: #27c93f; }
+
+        .brand-title {
+            color: #1d1d1f;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-decoration: none;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+
+        .sidebar.collapsed .brand-title {
+            opacity: 0;
+            display: none;
+        }
+
+        /* Botão de Retrair Circular com Animação */
+        .btn-toggle {
+            background: #e5e5ea;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .btn-toggle:hover {
+            background: #d1d1d6;
+        }
+
+        .btn-toggle svg {
+            width: 14px;
+            height: 14px;
+            stroke: #1d1d1f;
+            stroke-width: 2.5;
+            fill: none;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .sidebar.collapsed .btn-toggle {
+            transform: rotate(360deg);
+        }
+
+        .sidebar.collapsed .btn-toggle svg {
+            transform: rotate(180deg);
+        }
+
+        /* Seção "MAIN" */
+        .section-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #8e8e93;
+            letter-spacing: 1px;
+            margin: 10px 10px 8px 10px;
+            text-transform: uppercase;
+            transition: opacity 0.2s;
+        }
+
+        .sidebar.collapsed .section-label {
+            opacity: 0;
+            display: none;
+        }
+
+        /* Lista de Links */
+        .nav-links {
             list-style: none;
-            display: block;
-            width: 20px;
-            height: 20px;
-            background: rgba(220, 38, 38, 0.12);
-            border: 1px solid rgba(220, 38, 38, 0.25);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .nav-links a {
+            color: #48484a;
+            background-color: #f2f2f7;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 10px 14px;
             border-radius: 12px;
-            bottom: -150px;
-            animation: moveCubes 22s infinite ease-in-out;
-            user-select: none;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            white-space: nowrap;
         }
 
-        /* Animação CSS: Subindo, girando e descendo */
-        @keyframes moveCubes {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.8;
-            }
-            50% {
-                transform: translateY(-50vh) rotate(180deg);
-            }
-            70% {
-                transform: translateY(-35vh) rotate(240deg);
-            }
-            100% {
-                transform: translateY(-105vh) rotate(360deg);
-                opacity: 0;
-            }
+        .nav-links a:hover {
+            background-color: #e5e5ea;
+            color: #000000;
         }
 
-        /* Distribuição dos 16 cubos com posições e tempos variados */
-        .cubes-bg li:nth-child(1)  { left: 25%; width: 80px; height: 80px; animation-delay: -2s;  animation-duration: 26s; }
-        .cubes-bg li:nth-child(2)  { left: 10%; width: 30px; height: 30px; animation-delay: -7s;  animation-duration: 20s; }
-        .cubes-bg li:nth-child(3)  { left: 70%; width: 45px; height: 45px; animation-delay: -12s; animation-duration: 22s; }
-        .cubes-bg li:nth-child(4)  { left: 40%; width: 60px; height: 60px; animation-delay: -5s;  animation-duration: 30s; }
-        .cubes-bg li:nth-child(5)  { left: 65%; width: 25px; height: 25px; animation-delay: -15s; animation-duration: 18s; }
-        .cubes-bg li:nth-child(6)  { left: 85%; width: 90px; height: 90px; animation-delay: -8s;  animation-duration: 28s; }
-        .cubes-bg li:nth-child(7)  { left: 55%; width: 50px; height: 50px; animation-delay: -18s; animation-duration: 24s; }
-        .cubes-bg li:nth-child(8)  { left: 15%; width: 20px; height: 20px; animation-delay: -3s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(9)  { left: 3%;  width: 40px; height: 40px; animation-delay: -10s; animation-duration: 32s; }
-        .cubes-bg li:nth-child(10) { left: 92%; width: 70px; height: 70px; animation-delay: -14s; animation-duration: 25s; }
-        .cubes-bg li:nth-child(11) { left: 32%; width: 35px; height: 35px; animation-delay: -9s;  animation-duration: 23s; }
-        .cubes-bg li:nth-child(12) { left: 48%; width: 75px; height: 75px; animation-delay: -16s; animation-duration: 27s; }
-        .cubes-bg li:nth-child(13) { left: 78%; width: 20px; height: 20px; animation-delay: -4s;  animation-duration: 19s; }
-        .cubes-bg li:nth-child(14) { left: 20%; width: 55px; height: 55px; animation-delay: -11s; animation-duration: 29s; }
-        .cubes-bg li:nth-child(15) { left: 80%; width: 40px; height: 40px; animation-delay: -1s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(16) { left: 60%; width: 30px; height: 30px; animation-delay: -13s; animation-duration: 25s; }
+        /* Estado Clicado / Ativo (Fica Azul) */
+        .nav-links a:active,
+        .nav-links a.active {
+            background-color: #2554d7;
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 84, 215, 0.3);
+        }
+
+        /* Modos Recolhidos */
+        .sidebar.collapsed .nav-links a {
+            padding: 12px;
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .link-text {
+            display: none;
+        }
+
+        .link-short {
+            display: none;
+            font-weight: 700;
+            font-size: 11px;
+        }
+
+        .sidebar.collapsed .link-short {
+            display: inline;
+        }
+
+        /* Botão Logout em Destaque */
+        .btn-logout {
+            background-color: #ffe5e5 !important;
+            color: #ff3b30 !important;
+        }
+
+        .btn-logout:hover {
+            background-color: #ffd1d1 !important;
+        }
+
+        .btn-logout:active {
+            background-color: #ff3b30 !important;
+            color: #ffffff !important;
+        }
+
+        /* --- CONTEÚDO PRINCIPAL --- */
+        .main-container {
+            position: relative;
+            z-index: 2;
+            flex-grow: 1;
+            padding: 20px 30px;
+            margin-left: 270px;
+            width: calc(100% - 270px);
+            transition: margin-left 0.4s cubic-bezier(0.16, 1, 0.3, 1), width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .sidebar.collapsed ~ .main-container {
+            margin-left: 98px;
+            width: calc(100% - 98px);
+        }
+
+        /* Messages */
+        .msg-alert {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            font-size: 12px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .msg-erro {
+            color: #ffffff;
+            background: rgba(255, 59, 48, 0.4);
+        }
     </style>
 </head>
+<body>
 
-<body class="bg-red-50/40 min-h-screen flex flex-col font-sans text-slate-800 relative">
+    <!-- Background Waves Animation -->
+    <svg class="background-waves" preserveAspectRatio="none" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+        <circle class="wave wave-left-outer" cx="-100" cy="1100" r="750" fill="rgba(255, 255, 255, 0.06)" />
+        <circle class="wave wave-left-inner" cx="-100" cy="1100" r="520" fill="rgba(255, 255, 255, 0.08)" />
+        <path class="wave wave-right" d="M 350 -100 C 650 150, 980 350, 780 700 C 620 980, 720 1080, 1100 1100 L 1100 -100 Z" fill="rgba(255, 255, 255, 0.07)" />
+    </svg>
 
-    <!-- Fundo Animado com 16 Cubos -->
-    <ul class="cubes-bg">
-        <li></li><li></li><li></li><li></li>
-        <li></li><li></li><li></li><li></li>
-        <li></li><li></li><li></li><li></li>
-        <li></li><li></li><li></li><li></li>
-    </ul>
-
-    <!-- Navbar Pílula Clean com Contorno Vermelho igual ao card Olá -->
-    <header class="w-full sticky top-6 z-50 px-4">
-        <div class="max-w-5xl mx-auto bg-white/90 backdrop-blur-md rounded-full py-2.5 px-4 sm:px-6 shadow-xl border border-red-100 flex items-center justify-between gap-2">
-
-            <!-- Menu Principal de Navegação (Ícones + Texto) -->
-            <nav class="flex items-center justify-center gap-1 sm:gap-2 flex-1 overflow-x-auto py-1">
-                
-                <!-- PDV -->
-                <a href="/pdv" class="px-3 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shrink-0 {{ 'bg-red-600 text-white shadow-md' if request.url.path.startswith('/pdv') else 'text-slate-500 hover:text-red-600 hover:bg-red-50' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
+    <!-- Sidebar macOS Style -->
+    <aside class="sidebar" id="sidebar">
+        <div>
+            <!-- Header com Bolinhas Mac e Botão Toggle -->
+            <div class="sidebar-header">
+                <div class="mac-dots">
+                    <div class="dot dot-close"></div>
+                    <div class="dot dot-minimize"></div>
+                    <div class="dot dot-expand"></div>
+                </div>
+                <a href="/" class="brand-title">AAPM SYSTEM</a>
+                <button class="btn-toggle" id="toggleBtn" title="Toggle Sidebar">
+                    <svg viewBox="0 0 24 24">
+                        <polyline points="15 18 9 12 15 6"></polyline>
                     </svg>
-                    <span>PDV</span>
-                </a>
-
-                <!-- Produtos -->
-                <a href="/produtos" class="px-3 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shrink-0 {{ 'bg-red-600 text-white shadow-md' if request.url.path.startswith('/produtos') else 'text-slate-500 hover:text-red-600 hover:bg-red-50' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                    </svg>
-                    <span>Produtos</span>
-                </a>
-
-                <!-- Categorias -->
-                <a href="/categorias" class="px-3 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shrink-0 {{ 'bg-red-600 text-white shadow-md' if request.url.path.startswith('/categorias') else 'text-slate-500 hover:text-red-600 hover:bg-red-50' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
-                    </svg>
-                    <span>Categorias</span>
-                </a>
-
-                <!-- Clientes -->
-                <a href="/clientes" class="px-3 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shrink-0 {{ 'bg-red-600 text-white shadow-md' if request.url.path.startswith('/clientes') else 'text-slate-500 hover:text-red-600 hover:bg-red-50' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5 5 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                    </svg>
-                    <span>Clientes</span>
-                </a>
-
-                <!-- Movimentações -->
-                <a href="/movimentacoes/nova" class="px-3 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shrink-0 {{ 'bg-red-600 text-white shadow-md' if request.url.path.startswith('/movimentacoes') else 'text-slate-500 hover:text-red-600 hover:bg-red-50' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-                    </svg>
-                    <span>Movimentações</span>
-                </a>
-
-                {% if not usuario or usuario.role == 'admin' %}
-                <!-- Usuários -->
-                <a href="/usuarios" class="px-3 py-2 rounded-full font-semibold text-xs sm:text-sm transition-all flex items-center gap-2 shrink-0 {{ 'bg-red-600 text-white shadow-md' if request.url.path.startswith('/usuarios') else 'text-slate-500 hover:text-red-600 hover:bg-red-50' }}">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                    </svg>
-                    <span>Usuários</span>
-                </a>
-                {% endif %}
-
-            </nav>
-
-            <!-- Botão Sair no Canto Direito -->
-            <div class="pl-2 border-l border-red-100 shrink-0">
-                <a href="/auth/logout" title="Sair" class="p-2 rounded-full text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors flex items-center gap-1.5 font-bold text-xs">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                    </svg>
-                    <span class="hidden sm:inline">Sair</span>
-                </a>
+                </button>
             </div>
 
+            <div class="section-label">MAIN</div>
+
+            <ul class="nav-links">
+                <li>
+                    <a href="/pdv" class="{% if request.url.path == '/pdv' %}active{% endif %}">
+                        <span class="link-text">POS (PDV)</span>
+                        <span class="link-short">PDV</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/produtos" class="{% if request.url.path == '/produtos' %}active{% endif %}">
+                        <span class="link-text">Products</span>
+                        <span class="link-short">PRD</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/movimentacoes" class="{% if request.url.path == '/movimentacoes' %}active{% endif %}">
+                        <span class="link-text">Transactions</span>
+                        <span class="link-short">TRX</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/categorias" class="{% if request.url.path == '/categorias' %}active{% endif %}">
+                        <span class="link-text">Categories</span>
+                        <span class="link-short">CAT</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/usuarios" class="{% if request.url.path == '/usuarios' %}active{% endif %}">
+                        <span class="link-text">Users</span>
+                        <span class="link-short">USR</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/clientes" class="{% if request.url.path == '/clientes' %}active{% endif %}">
+                        <span class="link-text">Clients</span>
+                        <span class="link-short">CLI</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/armarios" class="{% if request.url.path == '/armarios' %}active{% endif %}">
+                        <span class="link-text">Lockers</span>
+                        <span class="link-short">LCK</span>
+                    </a>
+                </li>
+            </ul>
         </div>
-    </header>
 
-    <!-- Conteúdo Principal Dashboard -->
-    <main class="flex-1 max-w-5xl w-full mx-auto px-6 mt-16 mb-8 space-y-8 z-10">
+        <div class="nav-links">
+            <a href="/auth/logout" class="btn-logout">
+                <span class="link-text">Logout</span>
+                <span class="link-short">OFF</span>
+            </a>
+        </div>
+    </aside>
 
-        <!-- Cartão de Boas-Vindas / Perfil (Com Borda Vermelha) -->
-        <section class="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-red-100 p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div class="space-y-1">
-                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                    Olá, {{ usuario.nome if usuario else 'Usuário' }}!
-                </h1>
-                <p class="text-slate-500 text-sm">
-                    Bem-vindo ao painel do sistema de controle de estoque. Utilize o menu superior para navegar entre os módulos.
-                </p>
-            </div>
+    <!-- Main Content Area -->
+    <main class="main-container">
+        {% if erro %}
+            <div class="msg-alert msg-erro">{{ erro }}</div>
+        {% endif %}
 
-            <!-- Badge do Perfil -->
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider {{ 'bg-red-50 text-red-700 border border-red-200' if usuario and usuario.role == 'admin' else 'bg-slate-100 text-slate-700 border border-slate-200' }}">
-                {{ usuario.role if usuario else 'operador' }}
-            </span>
-        </section>
-
+        {% block content %}
+            <!-- Conteúdo injetado aqui -->
+        {% endblock %}
     </main>
 
-    <!-- Rodapé -->
-    <footer class="w-full bg-white/80 backdrop-blur-md border-t border-red-100/80 py-4 text-center text-xs text-slate-400 z-10 font-medium mt-auto">
-        &copy; 2026 Senai
-    </footer>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggleBtn');
 
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+    </script>
 </body>
-
 </html>

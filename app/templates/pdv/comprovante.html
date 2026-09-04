@@ -3,318 +3,68 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comprovante #{{ venda.id }} — AAPM SENAI</title>
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: rgba(254, 242, 242, 0.4); /* bg-red-50/40 */
-            color: #1e293b;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* ── Container do Fundo Animado (Cubos) ── */
-        .cubes-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0;
-            margin: 0;
-            padding: 0;
-            pointer-events: none;
-        }
-
-        .cubes-bg li {
-            position: absolute;
-            list-style: none;
-            display: block;
-            width: 20px;
-            height: 20px;
-            background: rgba(220, 38, 38, 0.12); /* Vermelho translúcido */
-            border: 1px solid rgba(220, 38, 38, 0.25);
-            border-radius: 12px;
-            bottom: -150px;
-            animation: moveCubes 12s infinite ease-in-out;
-        }
-
-        @keyframes moveCubes {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.8;
-            }
-            50% {
-                transform: translateY(-50vh) rotate(180deg);
-            }
-            70% {
-                transform: translateY(-35vh) rotate(240deg);
-            }
-            100% {
-                transform: translateY(-105vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Atrasos negativos para carregar já em movimento */
-        .cubes-bg li:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: -2s; animation-duration: 14s; }
-        .cubes-bg li:nth-child(2) { left: 10%; width: 30px; height: 30px; animation-delay: -5s; animation-duration: 10s; }
-        .cubes-bg li:nth-child(3) { left: 70%; width: 45px; height: 45px; animation-delay: -8s; animation-duration: 12s; }
-        .cubes-bg li:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: -12s; animation-duration: 18s; }
-        .cubes-bg li:nth-child(5) { left: 65%; width: 25px; height: 25px; animation-delay: -3s; animation-duration: 9s;  }
-        .cubes-bg li:nth-child(6) { left: 85%; width: 90px; height: 90px; animation-delay: -9s; animation-duration: 15s; }
-        .cubes-bg li:nth-child(7) { left: 55%; width: 50px; height: 50px; animation-delay: -6s; animation-duration: 13s; }
-        .cubes-bg li:nth-child(8) { left: 15%; width: 20px; height: 20px; animation-delay: -1s; animation-duration: 11s; }
-        .cubes-bg li:nth-child(9) { left: 3%;  width: 40px; height: 40px; animation-delay: -7s; animation-duration: 16s; }
-        .cubes-bg li:nth-child(10){ left: 92%; width: 70px; height: 70px; animation-delay: -11s; animation-duration: 14s; }
-
-        /* ── Container Central do Recibo ── */
-        .recibo-container {
-            width: 100%;
-            max-width: 420px;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .cupom {
-            background: rgba(255, 255, 255, 0.90);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(254, 202, 202, 0.8);
-            border-radius: 20px;
-            padding: 28px;
-            box-shadow: 0 10px 25px -5px rgba(220, 38, 38, 0.08);
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-        }
-
-        .cupom-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .topbar-badge {
-            display: inline-block;
-            background: #dc2626;
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 13px;
-            padding: 4px 12px;
-            border-radius: 999px;
-            letter-spacing: .05em;
-            margin-bottom: 8px;
-            box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
-        }
-
-        .titulo {
-            font-weight: 800;
-            font-size: 20px;
-            color: #0f172a;
-            letter-spacing: -.02em;
-        }
-
-        .subtitulo {
-            color: #64748b;
-            font-size: 12px;
-            margin-top: 4px;
-            font-weight: 500;
-        }
-
-        .linha-sep {
-            border: none;
-            border-top: 1px dashed #fecaca;
-            margin: 14px 0;
-        }
-
-        .item-linha {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            font-size: 13.5px;
-            color: #1e293b;
-            font-weight: 600;
-        }
-
-        .item-desc {
-            color: #64748b;
-            font-size: 11.5px;
-            margin-top: 2px;
-            margin-bottom: 8px;
-        }
-
-        .total-linha {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            margin-bottom: 6px;
-            color: #64748b;
-        }
-
-        .desc-linha {
-            color: #16a34a;
-            font-weight: 600;
-        }
-
-        .total-final {
-            display: flex;
-            justify-content: space-between;
-            font-size: 19px;
-            font-weight: 800;
-            color: #0f172a;
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 2px dashed #fecaca;
-        }
-
-        .obs-box {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            border-radius: 10px;
-            padding: 10px 12px;
-            font-size: 12px;
-            color: #991b1b;
-            margin-top: 12px;
-        }
-
-        /* ── Ações e Botões ── */
-        .acoes-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 14px;
-            text-decoration: none;
-            transition: all .2s;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-nova {
-            background: #dc2626;
-            color: #ffffff;
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
-        }
-
-        .btn-nova:hover {
-            background: #b91c1c;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.85);
-            color: #475569;
-            border: 1px solid rgba(254, 202, 202, 0.8);
-        }
-
-        .btn-secondary:hover {
-            background: #ffffff;
-            color: #dc2626;
-            border-color: #fecaca;
-        }
-
-        /* ── Configurações de Impressão ── */
-        @media print {
-            body {
-                background: #ffffff !important;
-                padding: 0 !important;
-            }
-            .cubes-bg, .acoes-group {
-                display: none !important;
-            }
-            .recibo-container {
-                max-width: 100% !important;
-            }
-            .cupom {
-                border: none !important;
-                box-shadow: none !important;
-                padding: 0 !important;
-                background: #ffffff !important;
-            }
-        }
+        body { font-family: 'Courier New', monospace; max-width: 400px;
+               margin: 40px auto; background: #f8fafc; color: #1e293b; }
+        .cupom { background: #fff; border: 1px solid #e2e8f0;
+                 border-radius: 12px; padding: 28px; }
+        .titulo { text-align: center; font-weight: 700;
+                  font-size: 18px; margin-bottom: 4px; }
+        .subtitulo { text-align: center; color: #64748b;
+                     font-size: 12px; margin-bottom: 20px; }
+        .linha-sep { border: none; border-top: 1px dashed #e2e8f0;
+                     margin: 14px 0; }
+        .item-linha { display: flex; justify-content: space-between;
+                      font-size: 13px; margin-bottom: 6px; }
+        .item-desc { color: #64748b; font-size: 11px; margin-bottom: 8px; }
+        .total-linha { display: flex; justify-content: space-between;
+                       font-size: 13px; margin-bottom: 6px; color: #64748b; }
+        .total-final { display: flex; justify-content: space-between;
+                       font-size: 18px; font-weight: 800; margin-top: 10px; }
+        .desc-linha { color: #16a34a; }
+        .btn { display: block; text-align: center; margin-top: 20px;
+               padding: 12px; border-radius: 8px; font-weight: 700;
+               font-size: 14px; text-decoration: none; }
+        .btn-nova { background: #1e293b; color: #fff; }
+        .btn-hist  { background: #f1f5f9; color: #1e293b; margin-top: 8px; }
     </style>
 </head>
 <body>
-
-<!-- ── Fundo Animado com Cubos em CSS ── -->
-<ul class="cubes-bg">
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
-</ul>
-
-<main class="recibo-container">
     <div class="cupom">
-        <div class="cupom-header">
-            <span class="topbar-badge">AAPM SENAI</span>
-            <div class="titulo">Comprovante de Venda</div>
-            <div class="subtitulo">
-                Venda #{{ venda.id }} — {{ venda.criado_em.strftime('%d/%m/%Y às %H:%M') }}
-            </div>
+        <div class="titulo">AAPM SENAI</div>
+        <div class="subtitulo">
+            Venda #{{ venda.id }} —
+            {{ venda.criado_em.strftime('%d/%m/%Y %H:%M') }}
         </div>
-
         <hr class="linha-sep">
 
         {% if venda.cliente %}
         <div class="item-linha">
-            <span style="color:#64748b; font-weight:500;">Cliente</span>
+            <span>Cliente</span>
             <span>{{ venda.cliente.nome }}</span>
         </div>
         {% if venda.cliente.is_associado %}
-        <div class="item-linha desc-linha" style="margin-top: 4px;">
-            <span>Status</span>
-            <span>✓ Associado ({{ venda.desconto_percentual|int }}% desc.)</span>
+        <div class="item-linha desc-linha">
+            <span>Associado</span>
+            <span>✓ {{ venda.desconto_percentual|int }}% desc.</span>
         </div>
         {% endif %}
         <hr class="linha-sep">
         {% endif %}
 
-        <!-- Itens Comprados -->
         {% for item in venda.itens %}
         <div class="item-linha">
             <span>{{ item.produto_nome }}</span>
             <span>R$ {{ "%.2f"|format(item.subtotal) }}</span>
         </div>
         <div class="item-desc">
-            {{ item.quantidade }}x R$ {{ "%.2f"|format(item.preco_unitario) }}
+            {{ item.quantidade }} × R$ {{ "%.2f"|format(item.preco_unitario) }}
         </div>
         {% endfor %}
 
         <hr class="linha-sep">
 
-        <!-- Totais -->
         <div class="total-linha">
             <span>Subtotal</span>
             <span>R$ {{ "%.2f"|format(venda.total_bruto) }}</span>
@@ -333,25 +83,12 @@
         </div>
 
         {% if venda.observacao %}
-        <div class="obs-box">
-            <strong>Obs:</strong> {{ venda.observacao }}
-        </div>
+        <hr class="linha-sep">
+        <div style="font-size:12px; color:#64748b">{{ venda.observacao }}</div>
         {% endif %}
     </div>
 
-    <!-- Botões de Ação -->
-    <div class="acoes-group">
-        <a href="/pdv" class="btn btn-nova">
-            ➕ Nova Venda
-        </a>
-        <button onclick="window.print()" class="btn btn-secondary">
-            🖨️ Imprimir Comprovante
-        </button>
-        <a href="/pdv/historico" class="btn btn-secondary">
-            📋 Ver Histórico
-        </a>
-    </div>
-</main>
-
+    <a href="/pdv" class="btn btn-nova">+ Nova venda</a>
+    <a href="/pdv/historico" class="btn btn-hist">Ver histórico</a>
 </body>
 </html>

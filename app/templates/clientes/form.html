@@ -1,206 +1,47 @@
-<!-- templates/clientes/form.html -->
+<!-- template/clientes/form.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ "Editar" if editando else "Novo" }} Cliente — AAPM SENAI</title>
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-        /* Container do Fundo Animado */
-        .cubes-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 0; /* Fica no fundo */
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Estilo base de cada cubo */
-        .cubes-bg li {
-            position: absolute;
-            list-style: none;
-            display: block;
-            width: 20px;
-            height: 20px;
-            background: rgba(220, 38, 38, 0.12); /* Vermelho translúcido */
-            border: 1px solid rgba(220, 38, 38, 0.25);
-            border-radius: 12px; /* Cantos arredondados */
-            bottom: -150px;
-            animation: moveCubes 22s infinite ease-in-out;
-        }
-
-        /* Animação CSS: Subindo, girando e descendo */
-        @keyframes moveCubes {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.8;
-            }
-            50% {
-                transform: translateY(-50vh) rotate(180deg);
-            }
-            70% {
-                transform: translateY(-35vh) rotate(240deg);
-            }
-            100% {
-                transform: translateY(-105vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Distribuição dos 16 cubos com posições e tempos variados */
-        .cubes-bg li:nth-child(1)  { left: 25%; width: 80px; height: 80px; animation-delay: -2s;  animation-duration: 26s; }
-        .cubes-bg li:nth-child(2)  { left: 10%; width: 30px; height: 30px; animation-delay: -7s;  animation-duration: 20s; }
-        .cubes-bg li:nth-child(3)  { left: 70%; width: 45px; height: 45px; animation-delay: -12s; animation-duration: 22s; }
-        .cubes-bg li:nth-child(4)  { left: 40%; width: 60px; height: 60px; animation-delay: -5s;  animation-duration: 30s; }
-        .cubes-bg li:nth-child(5)  { left: 65%; width: 25px; height: 25px; animation-delay: -15s; animation-duration: 18s; }
-        .cubes-bg li:nth-child(6)  { left: 85%; width: 90px; height: 90px; animation-delay: -8s;  animation-duration: 28s; }
-        .cubes-bg li:nth-child(7)  { left: 55%; width: 50px; height: 50px; animation-delay: -18s; animation-duration: 24s; }
-        .cubes-bg li:nth-child(8)  { left: 15%; width: 20px; height: 20px; animation-delay: -3s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(9)  { left: 3%;  width: 40px; height: 40px; animation-delay: -10s; animation-duration: 32s; }
-        .cubes-bg li:nth-child(10) { left: 92%; width: 70px; height: 70px; animation-delay: -14s; animation-duration: 25s; }
-        .cubes-bg li:nth-child(11) { left: 32%; width: 35px; height: 35px; animation-delay: -9s;  animation-duration: 23s; }
-        .cubes-bg li:nth-child(12) { left: 48%; width: 75px; height: 75px; animation-delay: -16s; animation-duration: 27s; }
-        .cubes-bg li:nth-child(13) { left: 78%; width: 20px; height: 20px; animation-delay: -4s;  animation-duration: 19s; }
-        .cubes-bg li:nth-child(14) { left: 20%; width: 55px; height: 55px; animation-delay: -11s; animation-duration: 29s; }
-        .cubes-bg li:nth-child(15) { left: 80%; width: 40px; height: 40px; animation-delay: -1s;  animation-duration: 21s; }
-        .cubes-bg li:nth-child(16) { left: 60%; width: 30px; height: 30px; animation-delay: -13s; animation-duration: 25s; }
-    </style>
+<head><meta charset="UTF-8">
+<title>{{ "Editar" if editando else "Novo" }} Cliente — AAPM SENAI</title>
 </head>
-<body class="bg-red-50/40 min-h-screen flex items-center justify-center p-4 font-sans text-slate-800 relative">
+<body>
+    <h1>{{ "Editar cliente" if editando else "Novo cliente" }}</h1>
 
-    <!-- Fundo Animado com 16 Cubos -->
-    <ul class="cubes-bg">
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-        <li></li>
-    </ul>
+    {% if erro %}<p style="color:red">{{ erro }}</p>{% endif %}
+    {% if request.query_params.get('erro') == 'matricula' %}
+        <p style="color:red">Esta matrícula já está em uso.</p>
+    {% endif %}
 
-    <!-- Card Principal do Formulário -->
-    <main class="w-full max-w-lg bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-red-100/80 p-8 space-y-6 my-8 z-10">
-        
-        <!-- Cabeçalho -->
-        <div class="text-center space-y-2">
-            <div class="px-3.5 py-1.5 bg-red-600 text-white font-bold text-sm rounded-xl shadow-md tracking-wider inline-flex items-center justify-center mb-1 transform transition-transform duration-300 hover:scale-105">
-                AAPM
-            </div>
-            <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">
-                {{ "Editar cliente" if editando else "Novo cliente" }}
-            </h1>
-            <p class="text-sm text-slate-500">
-                {{ "Atualize as informações do cliente cadastrado" if editando else "Preencha os dados para cadastrar um novo cliente" }}
-            </p>
-        </div>
+    <form action="{{ '/clientes/' + editando.id|string + '/editar' if editando else '/clientes/novo' }}"
+          method="post">
 
-        <!-- Alertas de Erro -->
-        {% if erro %}
-            <div class="p-4 bg-red-50/90 backdrop-blur-md border border-red-200 text-red-700 text-sm font-medium rounded-xl text-center shadow-sm">
-                {{ erro }}
-            </div>
-        {% endif %}
+        <label>Nome completo:
+            <input type="text" name="nome" required autofocus
+                   value="{{ editando.nome if editando else (valores.nome if valores else '') }}">
+        </label><br>
 
-        {% if request.query_params.get('erro') == 'matricula' %}
-            <div class="p-4 bg-red-50/90 backdrop-blur-md border border-red-200 text-red-700 text-sm font-medium rounded-xl text-center shadow-sm">
-                ⚠️ Esta matrícula já está em uso por outro cliente.
-            </div>
-        {% endif %}
+        <label>Matrícula SENAI (opcional):
+            <input type="text" name="matricula"
+                   placeholder="Ex: 2024001"
+                   value="{{ editando.matricula if editando else (valores.matricula if valores else '') }}">
+        </label><br>
 
-        <!-- Formulário -->
-        <form action="{{ '/clientes/' + editando.id|string + '/editar' if editando else '/clientes/novo' }}"
-              method="post"
-              class="space-y-4">
+        <label>Telefone (opcional):
+            <input type="text" name="telefone"
+                   placeholder="Ex: (11) 99999-9999"
+                   value="{{ editando.telefone if editando else (valores.telefone if valores else '') }}">
+        </label><br>
 
-            <!-- Campo Nome Completo -->
-            <div>
-                <label for="nome" class="block text-sm font-semibold text-slate-700 mb-1.5">Nome completo</label>
-                <input type="text"
-                       name="nome"
-                       id="nome"
-                       required
-                       autofocus
-                       value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
-                       placeholder="Ex: João da Silva"
-                       class="w-full px-4 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all text-sm text-slate-900">
-            </div>
+        <label>
+            <input type="checkbox" name="is_associado" value="true"
+                {{ 'checked' if (editando and editando.is_associado) or (valores and valores.is_associado) }}>
+            É associado AAPM (recebe 10% de desconto)
+        </label><br><br>
 
-            <!-- Campo Matrícula SENAI -->
-            <div>
-                <label for="matricula" class="block text-sm font-semibold text-slate-700 mb-1.5">
-                    Matrícula SENAI <span class="text-xs font-normal text-slate-400">(opcional)</span>
-                </label>
-                <input type="text"
-                       name="matricula"
-                       id="matricula"
-                       value="{{ editando.matricula if editando else (valores.matricula if valores else '') }}"
-                       placeholder="Ex: 2024001"
-                       class="w-full px-4 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all text-sm text-slate-900">
-            </div>
-
-            <!-- Campo Telefone -->
-            <div>
-                <label for="telefone" class="block text-sm font-semibold text-slate-700 mb-1.5">
-                    Telefone <span class="text-xs font-normal text-slate-400">(opcional)</span>
-                </label>
-                <input type="text"
-                       name="telefone"
-                       id="telefone"
-                       value="{{ editando.telefone if editando else (valores.telefone if valores else '') }}"
-                       placeholder="Ex: (11) 99999-9999"
-                       class="w-full px-4 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600 transition-all text-sm text-slate-900">
-            </div>
-
-            <!-- Campo Associado AAPM (Checkbox destacado) -->
-            <div class="pt-2">
-                <label class="flex items-start gap-3 p-3.5 bg-slate-50/80 hover:bg-slate-100/80 border border-slate-200 rounded-xl cursor-pointer transition-colors">
-                    <input type="checkbox"
-                           name="is_associado"
-                           value="true"
-                           {{ 'checked' if (editando and editando.is_associado) or (valores and valores.is_associado) }}
-                           class="mt-0.5 h-4 w-4 text-red-600 rounded border-slate-300 focus:ring-red-500">
-                    <div class="text-sm">
-                        <span class="font-semibold text-slate-800 block">É associado AAPM</span>
-                        <span class="text-slate-500 text-xs">Aplica automaticamente 10% de desconto em compras.</span>
-                    </div>
-                </label>
-            </div>
-
-            <!-- Botões de Ação -->
-            <div class="pt-3 flex items-center gap-3">
-                <button type="submit"
-                        class="flex-1 py-3 px-4 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 text-sm">
-                    {{ "Salvar alterações" if editando else "Cadastrar cliente" }}
-                </button>
-                <a href="/clientes"
-                   class="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition-all duration-200 text-sm text-center">
-                    Cancelar
-                </a>
-            </div>
-
-        </form>
-
-    </main>
-
+        <button type="submit">
+            {{ "Salvar alterações" if editando else "Cadastrar cliente" }}
+        </button>
+        <a href="/clientes">Cancelar</a>
+    </form>
 </body>
 </html>
