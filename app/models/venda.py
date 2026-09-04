@@ -93,3 +93,5 @@ class ItemVenda(Base):
     # Relacionamentos
     venda   = relationship("Venda", back_populates="itens")
     produto = relationship("Produto", backref="itens_venda")
+
+    

@@ -1,8 +1,7 @@
 # controllers/produto_controller.py — CRUD produtos AAPM SENAI
-
+import math
 import os
 import shutil
-import math
 from fastapi import APIRouter, Depends, Request, Form, UploadFile, File, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -30,9 +29,9 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)  # cria a pasta se não existir
 def listar_produtos(
     request: Request,
     busca: str = "",
-    categoria_id: int = 0,       # 0 = todas as categorias
+    categoria_id: int = 0,
     pagina: int = 1,
-    por_pagina: int = 2,
+    por_pagina: int = 3,
     db: Session = Depends(get_db),
     usuario = Depends(get_usuario_logado)
 ):
@@ -43,6 +42,7 @@ def listar_produtos(
 
     if categoria_id:
         query = query.filter(Produto.categoria_id == categoria_id)
+
 
     query = query.order_by(Produto.nome)
 
@@ -55,25 +55,25 @@ def listar_produtos(
 
     offset = (pagina - 1) * por_pagina
 
-    # ✅ CORRIGIDO: Utilização do objeto query com a chamada correta .all()
     produtos = query.offset(offset).limit(por_pagina).all()
-
-    categorias = db.query(Categoria).filter(Categoria.ativo == True).all()
+    
+    categorias  = db.query(Categoria).filter(Categoria.ativo == True).all()
 
     return templates.TemplateResponse(
         request,
         "produtos/index.html",
         {
-            "request":        request,
-            "usuario":        usuario,
-            "produtos":       produtos,
-            "categorias":     categorias,
-            "busca":          busca,
-            "categoria_id":   categoria_id,
-            "pagina":         pagina,
-            "por_pagina":     por_pagina,
+            "request":      request,
+            "usuario":      usuario,
+            "produtos":     produtos,
+            "categorias":   categorias,
+            "busca":        busca,
+            "categoria_id": categoria_id,
+
+            "pagina": pagina,
+            "por_pagina": por_pagina,
             "total_produtos": total_produtos,
-            "total_paginas":  total_paginas
+            "total_paginas": total_paginas
         }
     )
 
@@ -116,6 +116,7 @@ async def criar_produto(
     categorias = db.query(Categoria).filter(Categoria.ativo == True).all()
 
     # Verifica duplicidade de nome
+    # ilike() para comparação case-insensitive, evitando produtos "Camiseta" e "camiseta".
     if db.query(Produto).filter(Produto.nome.ilike(nome)).first():
         return templates.TemplateResponse(
             request,
@@ -287,22 +288,31 @@ async def _salvar_imagem(imagem: UploadFile | None) -> str | None:
     """
     Salva o arquivo enviado em /static/uploads/ e retorna
     o path relativo para guardar no banco.
+
+    Retorna None se nenhum arquivo foi enviado ou se o
+    arquivo enviado estiver vazio (campo deixado em branco).
     """
+    # UploadFile com filename vazio = campo não preenchido
     if not imagem or not imagem.filename:
         return None
 
+    # Valida a extensão — aceita apenas imagens
     extensoes_permitidas = {".jpg", ".jpeg", ".png", ".webp"}
     _, ext = os.path.splitext(imagem.filename.lower())
 
     if ext not in extensoes_permitidas:
-        return None
+        return None  # ignora silenciosamente — pode virar erro em produção
 
+    # Garante nome de arquivo único usando o nome original
+    # Em produção: use uuid4() para evitar colisões e exposição de nomes
     nome_arquivo = f"{imagem.filename}"
     caminho_completo = os.path.join(UPLOAD_DIR, nome_arquivo)
 
+    # Salva o arquivo no disco
     with open(caminho_completo, "wb") as buffer:
         shutil.copyfileobj(imagem.file, buffer)
 
+    # Retorna o path relativo ao /static (para montar a URL)
     return f"uploads/{nome_arquivo}"
 
 

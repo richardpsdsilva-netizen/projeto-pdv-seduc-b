@@ -9,42 +9,43 @@ from app.controllers import auth_controller
 from app.controllers import usuario_controller
 from app.controllers import categoria_controller
 from app.controllers import produto_controller
-from app.controllers import pdv_controller
-from app.controllers import cliente_controller
 from app.controllers import movimentacao_controller
+from app.controllers import cliente_controller
+from app.controllers import pdv_controller
 
 
 app = FastAPI(title="Sistema de Ponto de venda")
 
-# Configurar a pasta para servir os arquivos estáticos (CSS, JS e IMG)
+#Configurar a pasta para servir os arquivos estáticos (CSS, JS e IMG)
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-# Configurar o Jinja2 para renderizar os HTML
+#Configurar o jinja2 para renderizar os HTML
 templates = Jinja2Templates(directory="app/templates")
 
-# Inclui os routers dos controladores
+#Inclui os routers dos controladores
 app.include_router(auth_controller.router)
 app.include_router(usuario_controller.router)
 app.include_router(categoria_controller.router)
 app.include_router(produto_controller.router)
-app.include_router(pdv_controller.router)
-app.include_router(cliente_controller.router)
 app.include_router(movimentacao_controller.router)
-
+app.include_router(cliente_controller.router)
+app.include_router(pdv_controller.router)
 
 @app.get("/")
 def tela_inicial(
     request: Request,
     usuario = Depends(get_usuario_opcional)
 ):
-    # Tela não logado
+    #Tela não logado
     if usuario is None:
         return templates.TemplateResponse(
+            request,
             "index.html",
             {"request": request}
         )
-    # Logado - exibir a tela de funcionario
+    #Logado - exibir a tela de funcionario
     return templates.TemplateResponse(
+        request,
         "home.html",
         {"request": request, "usuario": usuario}
     )

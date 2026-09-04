@@ -1,188 +1,91 @@
-<!-- templates/movimentacoes/historico.html -->
+<!-- templates/movimentacoes/index.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Histórico de Movimentações — AAPM SENAI</title>
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Movimentações — AAPM SENAI</title>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col font-sans text-slate-800">
+<body>
+    <h1>Histórico de movimentações</h1>
 
-    <!-- Navbar -->
-    <header class="w-full bg-white border-b border-slate-200 shadow-sm">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="px-3.5 h-12 bg-red-600 text-white font-bold text-lg rounded-2xl shadow-md mb-1 inline-flex items-center justify-center tracking-wider">
-    AAPM
-</div>
-                <span class="font-bold text-slate-900 text-lg">Sistema AAPM</span>
-           
-    </header>
+    <!-- Filtros -->
+    <form method="get" action="/movimentacoes">
+        <select name="produto_id">
+            <option value="0">Todos os produtos</option>
+            {% for p in produtos %}
+                <option value="{{ p.id }}"
+                    {{ 'selected' if produto_id == p.id else '' }}>
+                    {{ p.nome }}
+                </option>
+            {% endfor %}
+        </select>
 
-    <!-- Conteúdo Principal -->
-    <main class="flex-1 max-w-6xl w-full mx-auto px-6 py-8 space-y-6">
+        <select name="tipo">
+            <option value="">Todos os tipos</option>
+            <option value="entrada" {{ 'selected' if tipo == 'entrada' else '' }}>
+                Entrada
+            </option>
+            <option value="saida" {{ 'selected' if tipo == 'saida' else '' }}>
+                Saída
+            </option>
+        </select>
 
-        <!-- Cabeçalho da Página -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-                    Histórico de Movimentações
-                    {% if produto %} — <span class="text-red-600">{{ produto.nome }}</span>{% endif %}
-                </h1>
-                <p class="text-slate-500 text-sm mt-1">
-                    Consulte as entradas e saídas de estoque registradas no sistema.
-                </p>
-            </div>
+        <button type="submit">Filtrar</button>
 
-            <a href="/movimentacoes/nova{% if produto %}?produto_id={{ produto.id }}{% endif %}" 
-               class="inline-flex items-center justify-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-xl shadow-md hover:shadow-lg transition-all duration-200">
-                + Registrar movimentação
-            </a>
-        </div>
-
-        <!-- Cards de Resumo (Exibido quando há um produto específico) -->
-        {% if produto %}
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Estoque Atual</span>
-                <p class="text-2xl font-bold text-slate-900 mt-1">{{ produto.estoque_atual }}</p>
-            </div>
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-emerald-100">
-                <span class="text-xs font-semibold uppercase tracking-wider text-emerald-600">Total de Entradas</span>
-                <p class="text-2xl font-bold text-emerald-600 mt-1">+ {{ total_entradas }}</p>
-            </div>
-            <div class="bg-white p-5 rounded-2xl shadow-sm border border-red-100">
-                <span class="text-xs font-semibold uppercase tracking-wider text-red-600">Total de Saídas</span>
-                <p class="text-2xl font-bold text-red-600 mt-1">- {{ total_saidas }}</p>
-            </div>
-        </div>
+        {% if produto_id or tipo %}
+            <a href="/movimentacoes">Limpar</a>
         {% endif %}
+    </form>
 
-        <!-- Filtros de Busca -->
-        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200/80">
-            <form method="get" class="flex flex-wrap items-center gap-3">
-                {% if produtos %}
-                <select name="produto_id" class="px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600">
-                    <option value="">Todos os produtos</option>
-                    {% for p in produtos %}
-                        <option value="{{ p.id }}">{{ p.nome }}</option>
-                    {% endfor %}
-                </select>
-                {% endif %}
+    <a href="/movimentacoes/nova">+ Registrar movimentação</a>
 
-                <select name="tipo" class="px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-600">
-                    <option value="">Todos os tipos</option>
-                    <option value="entrada">Entradas</option>
-                    <option value="saida">Saídas</option>
-                </select>
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Produto</th>
+                <th>Tipo</th>
+                <th>Quantidade</th>
+                <th>Preço unit.</th>
+                <th>Total</th>
+                <th>Observação</th>
+                <th>Registrado por</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for m in movimentacoes %}
+            <tr>
+                <td>{{ m.criado_em.strftime('%d/%m/%Y %H:%M') }}</td>
+                <td>
+                    <a href="/produtos/{{ m.produto_id }}">
+                        {{ m.produto.nome }}
+                    </a>
+                </td>
+                <td>
+                    {% if m.tipo.value == 'entrada' %}
+                        <span style="color:green">▲ Entrada</span>
+                    {% else %}
+                        <span style="color:red">▼ Saída</span>
+                    {% endif %}
+                </td>
+                <td>{{ m.quantidade }}</td>
+                <td>R$ {{ "%.2f"|format(m.preco_unitario) }}</td>
+                <td>R$ {{ "%.2f"|format(m.valor_total) }}</td>
+                <td>{{ m.observacao or "—" }}</td>
+                <td>{{ m.usuario.nome if m.usuario else "—" }}</td>
+            </tr>
+            {% endfor %}
 
-                <button type="submit" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-medium text-sm rounded-xl transition-colors">
-                    Filtrar
-                </button>
-            </form>
-        </div>
-
-        <!-- Tabela de Movimentações -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-slate-600">
-                    <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 uppercase font-semibold text-xs tracking-wider">
-                        <tr>
-                            <th class="px-6 py-4">Data</th>
-                            {% if not produto %}
-                            <th class="px-6 py-4">Produto</th>
-                            {% endif %}
-                            <th class="px-6 py-4">Tipo</th>
-                            <th class="px-6 py-4">Quantidade</th>
-                            <th class="px-6 py-4">Preço unit.</th>
-                            <th class="px-6 py-4">Total</th>
-                            <th class="px-6 py-4">Observação</th>
-                            <th class="px-6 py-4">Registrado por</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        {% for m in movimentacoes %}
-                        <tr class="hover:bg-slate-50/80 transition-colors">
-                            <td class="px-6 py-4 whitespace-nowrap text-slate-500">
-                                {{ m.criado_em.strftime('%d/%m/%Y %H:%M') }}
-                            </td>
-
-                            {% if not produto %}
-                            <td class="px-6 py-4 font-semibold text-slate-900 whitespace-nowrap">
-                                {{ m.produto.nome if m.produto else "—" }}
-                            </td>
-                            {% endif %}
-
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                {% if m.tipo.value == 'entrada' %}
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">
-                                        ▲ Entrada
-                                    </span>
-                                {% else %}
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-100">
-                                        ▼ Saída
-                                    </span>
-                                {% endif %}
-                            </td>
-
-                            <td class="px-6 py-4 font-semibold text-slate-900">
-                                {{ m.quantidade }}
-                            </td>
-
-                            <td class="px-6 py-4">
-                                R$ {{ "%.2f"|format(m.preco_unitario) }}
-                            </td>
-
-                            <td class="px-6 py-4 font-bold text-slate-900">
-                                R$ {{ "%.2f"|format(m.valor_total) }}
-                            </td>
-
-                            <td class="px-6 py-4 text-slate-500 max-w-xs truncate">
-                                {{ m.observacao or "—" }}
-                            </td>
-
-                            <td class="px-6 py-4 text-slate-500 whitespace-nowrap">
-                                {{ m.usuario.nome if m.usuario else "—" }}
-                            </td>
-                        </tr>
-                        {% endfor %}
-
-                        {% if not movimentacoes %}
-                        <tr>
-                            <td colspan="8" class="px-6 py-12 text-center text-slate-400">
-                                <div class="space-y-1">
-                                    <p class="text-base font-medium text-slate-600">Nenhuma movimentação encontrada.</p>
-                                    <p class="text-xs">Cadastre um novo registro para visualizar o histórico aqui.</p>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Link de Voltar -->
-        <div class="pt-2">
-            {% if produto %}
-                <a href="/produtos/{{ produto.id }}" class="text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors">
-                    ← Voltar ao produto
-                </a>
-            {% else %}
-                <a href="/dashboard" class="text-sm font-semibold text-slate-600 hover:text-red-600 transition-colors">
-                    ← Voltar ao Dashboard
-                </a>
+            {% if not movimentacoes %}
+            <tr>
+                <td colspan="8" style="text-align:center">
+                    Nenhuma movimentação encontrada.
+                </td>
+            </tr>
             {% endif %}
-        </div>
+        </tbody>
+    </table>
 
-    </main>
-
-    <!-- Rodapé -->
-    <footer class="w-full bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400 mt-auto">
-        &copy; 2026 Associação de Pais e Mestres
-    </footer>
-
+    <p><a href="/">← Dashboard</a></p>
 </body>
 </html>

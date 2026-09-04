@@ -138,7 +138,7 @@ def finalizar_venda(
             "produto_nome":  produto.nome,
         })
 
-    # ── Calcula desconto e total final
+    # ── Calcula desconto e total final 
     desconto_valor = total_bruto * (desconto_percentual / 100)
     total_liquido  = total_bruto - desconto_valor
 

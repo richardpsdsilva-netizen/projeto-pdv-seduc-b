@@ -70,7 +70,7 @@ class Movimentacao(Base):
     produto = relationship("Produto", backref="movimentacoes")
     usuario = relationship("Usuario", backref="movimentacoes")
 
-   
+    
     @property
     def valor_total(self) -> float:
         """Valor total da movimentação: quantidade × preço unitário."""
