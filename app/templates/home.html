@@ -1,15 +1,924 @@
+<!-- templates/pdv/index.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pós - login</title>
-</head>
-<body>
-    <h1>Olá, {{ usuario.nome }}</h1>
-    <p>Perfil: {{ usuario.role }}</p>
+    <title>PDV — AAPM SENAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-    <a href="/auth/logout">Sair</a>
+        body {
+            min-height: 100vh;
+            background: #2554d7;
+            position: relative;
+            color: #ffffff;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- ANIMAÇÃO EXCLUSIVA DAS ONDAS DO FUNDO --- */
+        .background-waves {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .wave {
+            transform-origin: center;
+            will-change: transform;
+        }
+
+        .wave-left-outer {
+            animation: moveCircleLeftSmooth 8s ease-in-out infinite alternate;
+        }
+
+        .wave-left-inner {
+            animation: moveCircleLeftSmooth 10s ease-in-out infinite alternate-reverse;
+        }
+
+        .wave-right {
+            animation: moveWaveRightSmooth 9s ease-in-out infinite alternate;
+        }
+
+        @keyframes moveCircleLeftSmooth {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(45px, -30px) scale(1.08) rotate(3.5deg); }
+            100% { transform: translate(-30px, 35px) scale(0.94) rotate(-2.5deg); }
+        }
+
+        @keyframes moveWaveRightSmooth {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(-50px, 30px) scale(1.06) rotate(-3.5deg); }
+            100% { transform: translate(35px, -35px) scale(0.95) rotate(2deg); }
+        }
+
+        /* --- HEADER E NAVEGAÇÃO --- */
+        header {
+            position: relative;
+            z-index: 10;
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        nav a:hover {
+            background: #ffffff;
+            color: #2151cc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* --- ALERTAS DE ERRO --- */
+        .alert-box {
+            position: relative;
+            z-index: 10;
+            max-width: 1400px;
+            margin: 15px auto 0;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        .msg-alert {
+            width: 100%;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            background: rgba(255, 42, 42, 0.2);
+            backdrop-filter: blur(8px);
+            color: #ffffff;
+            border: 1px solid rgba(255, 42, 42, 0.5);
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* --- CONTAINER PRINCIPAL DO PDV --- */
+        main {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 25px;
+            max-width: 1400px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        /* --- COLUNA ESQUERDA: CATÁLOGO --- */
+        section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-container input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-container input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ffffff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        #grade-produtos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .card-produto {
+            position: relative;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 12px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+
+        .card-produto:hover {
+            transform: translateY(-5px) scale(1.02);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-produto:active {
+            transform: scale(0.98);
+        }
+
+        .badge-esgotado {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 42, 42, 0.85);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 3;
+        }
+
+        .img-container {
+            width: 100%;
+            height: 120px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .card-produto:hover .img-container img {
+            transform: scale(1.1);
+        }
+
+        .card-info h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-detalhes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .preco-tag {
+            font-weight: 700;
+            font-size: 16px;
+            color: #2aff71;
+        }
+
+        /* --- COLUNA DIREITA: CARRINHO --- */
+        aside {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: fit-content;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .carrinho-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+        }
+
+        .carrinho-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        #contador-itens {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* CUSTOM SELECT CLIENTES */
+        .select-cliente-wrapper {
+            position: relative;
+        }
+
+        .select-cliente-wrapper label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 6px;
+            opacity: 0.8;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        #btn-custom-select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: white;
+            text-align: left;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        #btn-custom-select:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        #dropdown-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #1e42a9;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            margin-top: 5px;
+            z-index: 100;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        #dropdown-options div {
+            padding: 10px 14px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        #dropdown-options div:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        #badge-desconto {
+            margin-top: 8px;
+            padding: 8px 12px;
+            background: rgba(42, 255, 113, 0.2);
+            border: 1px solid rgba(42, 255, 113, 0.5);
+            color: #2aff71;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* LISTA DO CARRINHO */
+        #lista-carrinho {
+            max-height: 280px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+        }
+
+        .item-carrinho {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            animation: slideIn 0.2s ease;
+        }
+
+        .qtd-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3px;
+            border-radius: 6px;
+        }
+
+        .qtd-controls button {
+            background: #ffffff;
+            color: #2151cc;
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .qtd-controls button:active {
+            transform: scale(0.9);
+        }
+
+        #msg-vazio {
+            text-align: center;
+            padding: 30px 10px;
+            opacity: 0.6;
+            font-size: 13px;
+        }
+
+        /* TOTAIS E AÇÕES */
+        #totais {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #totais > div {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+
+        #val-total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2aff71;
+        }
+
+        #obs-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            font-size: 12px;
+            outline: none;
+            resize: none;
+            margin-top: 10px;
+        }
+
+        #obs-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        #btn-finalizar {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            background-color: #ffffff;
+            color: #2151cc;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        #btn-finalizar:hover:not(:disabled) {
+            background-color: #f8fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        #btn-finalizar:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* PAGINAÇÃO */
+        .pagination-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto 30px;
+            padding: 0 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .pagination-links {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .pagination-links a, .pagination-links span {
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            color: white;
+            text-decoration: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .pagination-links a:hover {
+            background: white;
+            color: #2151cc;
+        }
+
+        /* ANIMAÇÕES GERAIS */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* RESPONSIVIDADE */
+        @media (max-width: 992px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+            aside {
+                position: relative;
+                top: 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                padding: 15px;
+            }
+            nav {
+                justify-content: center;
+            }
+            #grade-produtos {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+            .card-produto {
+                padding: 10px;
+            }
+            .img-container {
+                height: 90px;
+            }
+            .pagination-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ONDAS DE FUNDO DA SUA TELA DE LOGIN -->
+    <svg class="background-waves" preserveAspectRatio="none" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+        <circle class="wave wave-left-outer" cx="-100" cy="1100" r="750" fill="rgba(255, 255, 255, 0.06)" />
+        <circle class="wave wave-left-inner" cx="-100" cy="1100" r="520" fill="rgba(255, 255, 255, 0.08)" />
+        <path class="wave wave-right" d="M 350 -100 C 650 150, 980 350, 780 700 C 620 980, 720 1080, 1100 1100 L 1100 -100 Z" fill="rgba(255, 255, 255, 0.07)" />
+    </svg>
+
+    <!-- Menu Principal de Navegação -->
+    <header>
+        <nav>
+            <a href="/pdv">PDV</a>
+            <a href="/produtos">Produtos</a>
+            <a href="/categorias">Categorias</a>
+            <a href="/clientes">Clientes</a>
+            <a href="/movimentacoes">Movimentações</a>
+
+            {% if not usuario or usuario.role == 'admin' %}
+            <a href="/usuarios">Usuários</a>
+            {% endif %}
+
+            <a href="/auth/logout">Sair</a>
+        </nav>
+    </header>
+
+    <!-- Alertas de Erro -->
+    {% set erro = request.query_params.get('erro') %}
+    {% if erro %}
+    <div class="alert-box">
+        <div class="msg-alert">
+            {% if erro == 'vazio' %}Carrinho vazio. Adicione produtos antes de finalizar.
+            {% elif erro == 'estoque' %}Estoque insuficiente para: <strong>{{ request.query_params.get('produto') }}</strong>
+            {% elif erro == 'quantidade' %}Quantidade inválida informada.
+            {% else %}Ocorreu um erro ao processar a venda. Tente novamente.
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Área Principal do PDV -->
+    <main>
+
+        <!-- COLUNA ESQUERDA — Buscador e Grade de Produtos -->
+        <section>
+            <div class="search-container">
+                <input type="text" id="busca-produto" oninput="filtrarProdutos()" placeholder="🔍 Buscar produto pelo nome..." autocomplete="off">
+            </div>
+
+            <div id="grade-produtos">
+                {% for p in produtos %}
+                <div class="card-produto"
+                    data-id="{{ p.id }}" 
+                    data-nome="{{ p.nome }}" 
+                    data-preco="{{ p.preco }}"
+                    data-estoque="{{ p.estoque_atual }}" 
+                    data-nome-lower="{{ p.nome.lower() }}"
+                    onclick="adicionarAoCarrinho(this)">
+
+                    {% if p.estoque_atual == 0 %}
+                    <span class="badge-esgotado">Esgotado</span>
+                    {% endif %}
+
+                    <div class="img-container">
+                        {% if p.imagem_url %}
+                        <img src="{{ p.imagem_url }}" alt="{{ p.nome }}">
+                        {% endif %}
+                    </div>
+
+                    <div class="card-info">
+                        <h3>{{ p.nome }}</h3>
+                        <div class="card-detalhes">
+                            <span class="preco-tag">R$ {{ "%.2f"|format(p.preco) }}</span>
+                            <span>Qtd: <strong>{{ p.estoque_atual }}</strong></span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- COLUNA DIREITA — Carrinho de Compras -->
+        <aside>
+
+            <div class="carrinho-header">
+                <h2>Carrinho</h2>
+                <span id="contador-itens">0 itens</span>
+            </div>
+
+            <!-- Seleção do Cliente -->
+            <div class="select-cliente-wrapper">
+                <label>Cliente</label>
+
+                <button type="button" id="btn-custom-select" onclick="toggleDropdown()">
+                    <span id="selected-option-text">Sem identificação (sem desconto)</span>
+                </button>
+
+                <div id="dropdown-options" style="display: none;">
+                    <div onclick="selecionarCliente('0', 'Sem identificação (sem desconto)', false)">
+                        Sem identificação (sem desconto)
+                    </div>
+
+                    {% for c in clientes %}
+                    <div onclick="selecionarCliente('{{ c.id }}', '{{ c.nome }} {% if c.matricula %}({{ c.matricula }}){% endif %} {% if c.is_associado %} — ASSOCIADO{% endif %}', {{ 'true' if c.is_associado else 'false' }})">
+                        {{ c.nome }} {% if c.matricula %}({{ c.matricula }}){% endif %} {% if c.is_associado %} — ASSOCIADO{% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div id="badge-desconto" style="display: none;">
+                    {{ desconto_associado|int if desconto_associado else 10 }}% de desconto aplicado (Associado)
+                </div>
+            </div>
+
+            <!-- Lista de Itens -->
+            <div id="lista-carrinho">
+                <div id="msg-vazio">
+                    <p>Clique nos produtos para adicionar ao carrinho</p>
+                </div>
+            </div>
+
+            <!-- Totais -->
+            <div>
+                <div id="totais" style="display: none;">
+                    <div>
+                        <span>Subtotal</span>
+                        <span id="val-subtotal">R$ 0,00</span>
+                    </div>
+                    <div id="linha-desconto" style="display: none;">
+                        <span id="label-desconto">Desconto</span>
+                        <span id="val-desconto">— R$ 0,00</span>
+                    </div>
+                    <div>
+                        <span>Total</span>
+                        <span id="val-total">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <textarea id="obs-input" rows="2" placeholder="Observação (opcional)..."></textarea>
+
+                <form id="form-venda" action="/pdv/finalizar" method="post">
+                    <input type="hidden" name="carrinho_json" id="input-carrinho">
+                    <input type="hidden" name="cliente_id" id="input-cliente-id" value="0">
+                    <input type="hidden" name="observacao" id="input-obs">
+                    <button id="btn-finalizar" type="button" disabled onclick="finalizarVenda()">
+                        Finalizar Venda
+                    </button>
+                </form>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Paginação -->
+    {% if total_paginas and total_paginas > 1 %}
+    <div class="pagination-container">
+        <div>
+            Página <span>{{ pagina }}</span> de <span>{{ total_paginas }}</span>
+        </div>
+        <div class="pagination-links">
+            {% if pagina > 1 %}
+            <a href="/pdv?pagina={{ pagina - 1 }}&busca={{ busca or '' }}&categoria_id={{ categoria_id or 0 }}">
+                &laquo; Anterior
+            </a>
+            {% else %}
+            <span>&laquo; Anterior</span>
+            {% endif %}
+
+            {% for p_num in range(1, total_paginas + 1) %}
+            {% if p_num == pagina %}
+            <span style="background: white; color: #2151cc; font-weight: bold;">{{ p_num }}</span>
+            {% else %}
+            <a href="/pdv?pagina={{ p_num }}&busca={{ busca or '' }}&categoria_id={{ categoria_id or 0 }}">
+                {{ p_num }}
+            </a>
+            {% endif %}
+            {% endfor %}
+
+            {% if pagina < total_paginas %}
+            <a href="/pdv?pagina={{ pagina + 1 }}&busca={{ busca or '' }}&categoria_id={{ categoria_id or 0 }}">
+                Próxima &raquo;
+            </a>
+            {% else %}
+            <span>Próxima &raquo;</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Script de Funcionamento mantido integralmente -->
+    <script>
+        let carrinho = [];
+        let pctDesconto = {{ desconto_associado|default(10)|int }};
+        let clienteAssociado = false;
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-options');
+            dropdown.style.display = (dropdown.style.display === 'none' || dropdown.style.display === '') ? 'block' : 'none';
+        }
+
+        function selecionarCliente(id, texto, associado) {
+            document.getElementById('selected-option-text').innerText = texto;
+            document.getElementById('input-cliente-id').value = id;
+
+            clienteAssociado = associado;
+            const badge = document.getElementById('badge-desconto');
+            if (clienteAssociado) {
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+
+            document.getElementById('dropdown-options').style.display = 'none';
+            renderizarCarrinho();
+        }
+
+        document.addEventListener('click', function (event) {
+            const container = document.getElementById('btn-custom-select');
+            const dropdown = document.getElementById('dropdown-options');
+            if (container && !container.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        function filtrarProdutos() {
+            const termo = document.getElementById('busca-produto').value.toLowerCase();
+            const cards = document.querySelectorAll('.card-produto');
+            cards.forEach(card => {
+                const nome = card.getAttribute('data-nome-lower');
+                if (nome.includes(termo)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function adicionarAoCarrinho(el) {
+            const id = el.getAttribute('data-id');
+            const nome = el.getAttribute('data-nome');
+            const preco = parseFloat(el.getAttribute('data-preco'));
+            const estoque = parseInt(el.getAttribute('data-estoque'));
+
+            const itemExistente = carrinho.find(item => item.id === id);
+
+            if (itemExistente) {
+                if (itemExistente.qtd + 1 > estoque) {
+                    alert('Estoque máximo atingido para este produto!');
+                    return;
+                }
+                itemExistente.qtd++;
+            } else {
+                carrinho.push({ id, nome, preco, qtd: 1, estoque });
+            }
+
+            renderizarCarrinho();
+        }
+
+        function alterarQtd(id, delta) {
+            const item = carrinho.find(i => i.id === id);
+            if (!item) return;
+
+            item.qtd += delta;
+
+            if (item.qtd > item.estoque) {
+                alert('Estoque insuficiente!');
+                item.qtd = item.estoque;
+            }
+
+            if (item.qtd <= 0) {
+                carrinho = carrinho.filter(i => i.id !== id);
+            }
+
+            renderizarCarrinho();
+        }
+
+        function renderizarCarrinho() {
+            const container = document.getElementById('lista-carrinho');
+            const divTotais = document.getElementById('totais');
+            const btnFinalizar = document.getElementById('btn-finalizar');
+            const contItens = document.getElementById('contador-itens');
+
+            if (carrinho.length === 0) {
+                container.innerHTML = `
+                    <div id="msg-vazio">
+                        <p>Clique nos produtos para adicionar ao carrinho</p>
+                    </div>`;
+                divTotais.style.display = 'none';
+                btnFinalizar.disabled = true;
+                contItens.innerText = '0 itens';
+                return;
+            }
+
+            let html = '';
+            let subtotal = 0;
+            let totalQtd = 0;
+
+            carrinho.forEach(item => {
+                const itemSubtotal = item.preco * item.qtd;
+                subtotal += itemSubtotal;
+                totalQtd += item.qtd;
+
+                html += `
+                <div class="item-carrinho">
+                    <div>
+                        <div style="font-weight: 600; font-size: 13px;">${item.nome}</div>
+                        <div style="font-size: 11px; opacity: 0.7;">R$ ${item.preco.toFixed(2)} un.</div>
+                    </div>
+                    <div class="qtd-controls">
+                        <button type="button" onclick="alterarQtd('${item.id}', -1)">-</button>
+                        <span style="font-size: 12px; font-weight: 600; min-width: 16px; text-align: center;">${item.qtd}</span>
+                        <button type="button" onclick="alterarQtd('${item.id}', 1)">+</button>
+                    </div>
+                    <div style="font-weight: 700; font-size: 13px;">
+                        R$ ${itemSubtotal.toFixed(2)}
+                    </div>
+                </div>`;
+            });
+
+            container.innerHTML = html;
+            contItens.innerText = `${totalQtd} item(ns)`;
+
+            let valorDesconto = 0;
+            if (clienteAssociado) {
+                valorDesconto = subtotal * (pctDesconto / 100);
+            }
+            const total = subtotal - valorDesconto;
+
+            document.getElementById('val-subtotal').innerText = `R$ ${subtotal.toFixed(2)}`;
+
+            const linhaDesconto = document.getElementById('linha-desconto');
+            if (clienteAssociado && valorDesconto > 0) {
+                linhaDesconto.style.display = 'flex';
+                document.getElementById('label-desconto').innerText = `Desconto (${pctDesconto}%)`;
+                document.getElementById('val-desconto').innerText = `— R$ ${valorDesconto.toFixed(2)}`;
+            } else {
+                linhaDesconto.style.display = 'none';
+            }
+
+            document.getElementById('val-total').innerText = `R$ ${total.toFixed(2)}`;
+
+            divTotais.style.display = 'flex';
+            btnFinalizar.disabled = false;
+        }
+
+        function finalizarVenda() {
+            if (carrinho.length === 0) return;
+
+            document.getElementById('input-carrinho').value = JSON.stringify(carrinho);
+            document.getElementById('input-obs').value = document.getElementById('obs-input').value;
+            document.getElementById('form-venda').submit();
+        }
+    </script>
 
 </body>
+
 </html>
