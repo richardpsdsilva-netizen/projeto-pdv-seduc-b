@@ -3,7 +3,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Comprovante #{{ venda.id }} — AAPM SENAI</title>
+    <title>Comprovante #{{ venda.id }} — PDV</title>
     <style>
         body { font-family: 'Courier New', monospace; max-width: 400px;
                margin: 40px auto; background: #f8fafc; color: #1e293b; }
@@ -32,7 +32,7 @@
 </head>
 <body>
     <div class="cupom">
-        <div class="titulo">AAPM SENAI</div>
+        <div class="titulo">PDV</div>
         <div class="subtitulo">
             Venda #{{ venda.id }} —
             {{ venda.criado_em.strftime('%d/%m/%Y %H:%M') }}
