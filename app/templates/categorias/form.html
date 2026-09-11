@@ -1,52 +1,526 @@
-<!-- templates/categorias/form.html -->
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ "Editar" if editando else "Nova" }} Categoria — AAPM SENAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #ffffff; /* Fundo da Sidebar Branca */
+        }
+
+        /* --- SIDEBAR BRANCA DA ESQUERDA --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            z-index: 1;
+            color: #1e293b;
+        }
+
+        .btn-close-sidebar {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            outline: none;
+        }
+
+        .btn-close-sidebar svg {
+            width: 24px;
+            height: 24px;
+            stroke: #1e293b;
+            stroke-width: 2.5;
+            fill: none;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #334155;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            opacity: 0.9;
+            transition: transform 0.2s, opacity 0.2s, color 0.2s;
+        }
+
+        .sidebar-item:hover {
+            opacity: 1;
+            color: #2554d7; /* Destaque azul no hover */
+            transform: translateX(6px);
+        }
+
+        .sidebar-item svg {
+            width: 20px;
+            height: 20px;
+            stroke: #334155;
+            fill: none;
+            stroke-width: 2;
+            transition: stroke 0.2s;
+        }
+
+        .sidebar-item:hover svg {
+            stroke: #2554d7; /* Destaque azul nos ícones no hover */
+        }
+
+        /* --- TELA PRINCIPAL (EFEITO SLIDE & SCALE 3D EM DESKTOP) --- */
+        .main-screen {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: #2554d7; /* Fundo Azul Original */
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), 
+                        border-radius 0.45s cubic-bezier(0.25, 1, 0.5, 1),
+                        box-shadow 0.45s ease;
+            transform-origin: left center;
+        }
+
+        /* Animação ao Abrir a Sidebar */
+        body.menu-open .main-screen {
+            transform: translateX(280px) scale(0.88);
+            border-radius: 24px;
+            box-shadow: -20px 20px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Overlay transparente para fechar ao clicar na tela deslocada */
+        .main-screen-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: none;
+            cursor: pointer;
+        }
+
+        body.menu-open .main-screen-overlay {
+            display: block;
+        }
+
+        /* Botão Hambúrguer */
+        .app-header {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            z-index: 5;
+        }
+
+        .btn-menu {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            outline: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-menu svg {
+            width: 28px;
+            height: 28px;
+            stroke: #ffffff;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        /* --- ANIMAÇÃO DAS ONDAS DO FUNDO --- */
+        .background-waves {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .wave {
+            transform-origin: center;
+            will-change: transform;
+        }
+
+        .wave-left-outer {
+            animation: moveCircleLeftSmooth 8s ease-in-out infinite alternate;
+        }
+
+        .wave-left-inner {
+            animation: moveCircleLeftSmooth 10s ease-in-out infinite alternate-reverse;
+        }
+
+        .wave-right {
+            animation: moveWaveRightSmooth 9s ease-in-out infinite alternate;
+        }
+
+        @keyframes moveCircleLeftSmooth {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(45px, -30px) scale(1.08) rotate(3.5deg); }
+            100% { transform: translate(-30px, 35px) scale(0.94) rotate(-2.5deg); }
+        }
+
+        @keyframes moveWaveRightSmooth {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(-50px, 30px) scale(1.06) rotate(-3.5deg); }
+            100% { transform: translate(35px, -35px) scale(0.95) rotate(2deg); }
+        }
+
+        /* --- CONTAINER DO FORMULÁRIO COM BORDA BRANCA --- */
+        .content-card {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 480px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+        }
+
+        /* Personalização da barra de rolagem interna */
+        .content-card::-webkit-scrollbar {
+            width: 6px;
+        }
+        .content-card::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        /* Mensagens de Alerta / Erro */
+        .msg-alert {
+            width: 100%;
+            padding: 10px 14px;
+            margin-bottom: 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            text-align: center;
+            background: rgba(255, 42, 42, 0.2);
+            border: 1px solid rgba(255, 42, 42, 0.6);
+            color: #ffb3b3;
+        }
+
+        /* Formulário */
+        .category-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .input-group label {
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            background: transparent;
+            border: 1.5px solid rgba(255, 255, 255, 0.7);
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #ffffff;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Ações (Botões) */
+        .form-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-submit {
+            flex: 1;
+            padding: 12px;
+            background-color: #ffffff;
+            color: #2151cc;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .btn-submit:hover {
+            background-color: #f8fafc;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .btn-cancel {
+            padding: 11px 18px;
+            background: transparent;
+            color: #ffffff;
+            text-decoration: none;
+            border: 1.5px solid rgba(255, 255, 255, 0.7);
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #ffffff;
+        }
+
+        /* Divisor e Produtos Vinculados */
+        .divider {
+            border: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.3);
+            margin: 25px 0 20px 0;
+        }
+
+        .linked-products-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .product-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .product-item {
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .product-item a {
+            color: #ffffff;
+            font-weight: 600;
+            text-decoration: underline;
+        }
+
+        .product-item a:hover {
+            opacity: 0.85;
+        }
+
+        .product-price {
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .empty-products {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ "Editar categoria" if editando else "Nova categoria" }}</h1>
 
-    {% if erro %}
-        <p style="color:red">{{ erro }}</p>
-    {% endif %}
-
-    <form action="{{ '/categorias/' + editando.id|string + '/editar' if editando else '/categorias/nova' }}"
-          method="post">
-
-        <label>Nome:
-            <input type="text"
-                   name="nome"
-                   value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
-                   required
-                   autofocus>
-        </label>
-        <br>
-
-        <button type="submit">
-            {{ "Salvar alterações" if editando else "Criar categoria" }}
+    <aside class="sidebar">
+        <button class="btn-close-sidebar" id="closeSidebarBtn" aria-label="Fechar menu">
+            <svg viewBox="0 0 24 24">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
         </button>
-        <a href="/categorias">Cancelar</a>
-    </form>
 
-    <!--
-        Na edição, exibe os produtos vinculados para o admin
-        ter contexto antes de fazer alterações.
-    -->
-    {% if editando and editando.produtos %}
-        <hr>
-        <h3>Produtos vinculados a esta categoria</h3>
-        <ul>
-            {% for p in editando.produtos if p.ativo %}
-                <li>
-                    <a href="/produtos/{{ p.id }}">{{ p.nome }}</a>
-                    — R$ {{ "%.2f"|format(p.preco) }}
-                </li>
-            {% else %}
-                <li>Nenhum produto ativo vinculado.</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        <nav class="sidebar-menu">
+            <a href="/categorias" class="sidebar-item">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                    <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                </svg>
+                Categorias
+            </a>
+            <a href="/produtos" class="sidebar-item">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                Produtos
+            </a>
+            <a href="/pedidos" class="sidebar-item">
+                <svg viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                Pedidos
+            </a>
+            <a href="/perfil" class="sidebar-item">
+                <svg viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                Perfil
+            </a>
+            <a href="/seguranca" class="sidebar-item">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Segurança
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-screen">
+        <div class="main-screen-overlay" id="screenOverlay"></div>
+
+        <header class="app-header">
+            <button class="btn-menu" id="openSidebarBtn" aria-label="Abrir menu">
+                <svg viewBox="0 0 24 24">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="15" y2="12"></line>
+                    <line x1="3" y1="18" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </header>
+
+        <svg class="background-waves" preserveAspectRatio="none" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+            <circle class="wave wave-left-outer" cx="-100" cy="1100" r="750" fill="rgba(255, 255, 255, 0.06)" />
+            <circle class="wave wave-left-inner" cx="-100" cy="1100" r="520" fill="rgba(255, 255, 255, 0.08)" />
+            <path class="wave wave-right" d="M 350 -100 C 650 150, 980 350, 780 700 C 620 980, 720 1080, 1100 1100 L 1100 -100 Z" fill="rgba(255, 255, 255, 0.07)" />
+        </svg>
+
+        <div class="content-card">
+            <h1 class="title">{{ "Editar categoria" if editando else "Nova categoria" }}</h1>
+
+            {% if erro %}
+                <div class="msg-alert">{{ erro }}</div>
+            {% endif %}
+
+            <form class="category-form" 
+                  action="{{ '/categorias/' + editando.id|string + '/editar' if editando else '/categorias/nova' }}"
+                  method="post">
+
+                <div class="input-group">
+                    <label for="nome">Nome da Categoria:</label>
+                    <input type="text"
+                           id="nome"
+                           name="nome"
+                           value="{{ editando.nome if editando else (valores.nome if valores else '') }}"
+                           required
+                           autofocus>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">
+                        {{ "Salvar alterações" if editando else "Criar categoria" }}
+                    </button>
+                    <a href="/categorias" class="btn-cancel">Cancelar</a>
+                </div>
+            </form>
+
+            {% if editando and editando.produtos %}
+                <hr class="divider">
+                <h3 class="linked-products-title">Produtos vinculados a esta categoria</h3>
+                <ul class="product-list">
+                    {% for p in editando.produtos if p.ativo %}
+                        <li class="product-item">
+                            <a href="/produtos/{{ p.id }}">{{ p.nome }}</a>
+                            <span class="product-price">R$ {{ "%.2f"|format(p.preco) }}</span>
+                        </li>
+                    {% else %}
+                        <li class="empty-products">Nenhum produto ativo vinculado.</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </main>
+
+    <script>
+        const body = document.body;
+        const openSidebarBtn = document.getElementById('openSidebarBtn');
+        const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+        const screenOverlay = document.getElementById('screenOverlay');
+
+        // Abertura e fechamento da sidebar
+        openSidebarBtn.addEventListener('click', () => {
+            body.classList.add('menu-open');
+        });
+
+        function closeMenu() {
+            body.classList.remove('menu-open');
+        }
+
+        closeSidebarBtn.addEventListener('click', closeMenu);
+        screenOverlay.addEventListener('click', closeMenu);
+    </script>
 </body>
 </html>

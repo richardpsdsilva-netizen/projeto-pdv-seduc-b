@@ -129,7 +129,8 @@
             width: 100%;
         }
 
-        .input-group svg {
+        /* Ícones da esquerda */
+        .input-group > svg {
             position: absolute;
             left: 12px;
             top: 50%;
@@ -139,11 +140,12 @@
             stroke: rgba(255, 255, 255, 0.8);
             stroke-width: 2;
             fill: none;
+            pointer-events: none;
         }
 
         .input-group input {
             width: 100%;
-            padding: 12px 12px 12px 40px;
+            padding: 12px 40px 12px 40px; /* Adicionado espaçamento à direita para o botão */
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.7);
             border-radius: 3px;
@@ -154,6 +156,12 @@
             transition: border-color 0.3s;
         }
 
+        /* Desativa o ícone padrão de exibir senha do Edge/IE para não duplicar */
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none;
+        }
+
         .input-group input::placeholder {
             color: rgba(255, 255, 255, 0.8);
             font-size: 11px;
@@ -162,6 +170,35 @@
 
         .input-group input:focus {
             border-color: #ffffff;
+        }
+
+        /* Botão de Exibir Senha (Branco) */
+        .btn-toggle-senha {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            outline: none;
+        }
+
+        .btn-toggle-senha svg {
+            width: 18px;
+            height: 18px;
+            stroke: #ffffff; /* Cor branca pura */
+            stroke-width: 2;
+            fill: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn-toggle-senha:hover svg {
+            opacity: 0.8;
         }
 
         /* Botão de Login */
@@ -217,7 +254,7 @@
     </svg>
 
     <div class="login-container">
-        <h1 class="title">Entrar no Sistema</h1>
+        <h1 class="title"></h1>
 
         {% if erro %}
             <div class="msg-alert msg-erro">{{ erro }}</div>
@@ -241,14 +278,47 @@
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                 </svg>
-                <input type="password" name="senha" placeholder="SENHA" required>
+                <input type="password" id="senha" name="senha" placeholder="SENHA" required>
+                
+                <!-- Botão dinâmico branco -->
+                <button type="button" class="btn-toggle-senha" id="toggleSenha" aria-label="Exibir senha">
+                    <svg id="eyeIcon" viewBox="0 0 24 24">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
             </div>
 
             <button type="submit" class="btn-login">ENTRAR</button>
         </form>
 
-        <p class="register-text">Não tem conta? <a href="/auth/cadastro">Cadastre-se</a></p>
+        <p class="register-text"><a href="/auth/cadastro"></a></p>
     </div>
 
+    <script>
+        const toggleSenhaBtn = document.getElementById('toggleSenha');
+        const senhaInput = document.getElementById('senha');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        toggleSenhaBtn.addEventListener('click', () => {
+            const isPassword = senhaInput.type === 'password';
+            
+            // Alterna o tipo do input
+            senhaInput.type = isPassword ? 'text' : 'password';
+            
+            // Alterna o ícone entre olho aberto e olho cortado
+            if (isPassword) {
+                eyeIcon.innerHTML = `
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                `;
+            } else {
+                eyeIcon.innerHTML = `
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                `;
+            }
+        });
+    </script>
 </body>
 </html>
