@@ -23,7 +23,7 @@
         }
 
         /* =========================
-           SIDEBAR
+            SIDEBAR
         ========================= */
 
         .sidebar {
@@ -32,7 +32,7 @@
             left: 0;
             width: 280px;
             height: 100vh;
-            padding: 40px 30px;
+            padding: 40px 0 40px 30px; /* Removido padding direito para o indicador colar na borda se desejar, ou ajustado */
             display: flex;
             flex-direction: column;
             gap: 30px;
@@ -63,10 +63,11 @@
         .sidebar-menu {
             display: flex;
             flex-direction: column;
-            gap: 22px;
+            gap: 8px; /* Reduzido levemente o gap para dar espaço ao padding dos itens */
         }
 
         .sidebar-item {
+            position: relative; /* Necessário para posicionar o retângulo */
             display: flex;
             align-items: center;
             gap: 14px;
@@ -75,14 +76,37 @@
             font-size: 15px;
             font-weight: 600;
             opacity: 0.9;
-            transition: transform 0.2s, opacity 0.2s, color 0.2s;
+            padding: 10px 14px;
+            border-radius: 8px 0 0 8px; /* Arredondado do lado esquerdo */
+            transition: transform 0.2s, opacity 0.2s, color 0.2s, background 0.2s;
+        }
+
+        /* Retângulo pequeno indicador */
+        .sidebar-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%) scaleY(0);
+            width: 4px;
+            height: 20px;
+            background: #2554d7;
+            border-radius: 0 4px 4px 0;
+            transition: transform 0.2s ease;
         }
 
         .sidebar-item:hover,
         .sidebar-item.active {
             opacity: 1;
             color: #2554d7;
+            background: rgba(37, 84, 215, 0.05); /* Leve fundo no hover/ativo */
             transform: translateX(6px);
+        }
+
+        /* Ativa a animação do retângulo */
+        .sidebar-item:hover::before,
+        .sidebar-item.active::before {
+            transform: translateY(-50%) scaleY(1);
         }
 
         .sidebar-item svg {
@@ -119,7 +143,7 @@
         }
 
         /* =========================
-           TELA PRINCIPAL
+            TELA PRINCIPAL
         ========================= */
 
         .main-screen {
@@ -164,7 +188,7 @@
         }
 
         /* =========================
-           HEADER
+            HEADER
         ========================= */
 
         .app-header {
@@ -193,7 +217,7 @@
         }
 
         /* =========================
-           ONDAS
+            ONDAS
         ========================= */
 
         .background-waves {
@@ -252,7 +276,7 @@
         }
 
         /* =========================
-           DASHBOARD
+            DASHBOARD
         ========================= */
 
         .dashboard {
@@ -335,7 +359,7 @@
         }
 
         /* =========================
-           CARDS
+            CARDS
         ========================= */
 
         .stats-grid {
@@ -426,7 +450,7 @@
         }
 
         /* =========================
-           GRID INFERIOR
+            GRID INFERIOR
         ========================= */
 
         .dashboard-grid {
@@ -472,7 +496,7 @@
         }
 
         /* =========================
-           GRÁFICO
+            GRÁFICO
         ========================= */
 
         .chart {
@@ -525,7 +549,7 @@
         }
 
         /* =========================
-           PEDIDOS
+            PEDIDOS
         ========================= */
 
         .orders-list {
@@ -592,7 +616,7 @@
         }
 
         /* =========================
-           PRODUTOS
+            PRODUTOS
         ========================= */
 
         .products-card {
@@ -631,7 +655,7 @@
         }
 
         /* =========================
-           RESPONSIVO
+            RESPONSIVO
         ========================= */
 
         @media (max-width: 1000px) {
@@ -684,7 +708,7 @@
 <body>
 
     <!-- =========================
-         SIDEBAR
+          SIDEBAR
     ========================== -->
 
     <aside class="sidebar">
@@ -796,7 +820,7 @@
 
 
     <!-- =========================
-         TELA PRINCIPAL
+          TELA PRINCIPAL
     ========================== -->
 
     <main class="main-screen">
@@ -823,7 +847,7 @@
 
 
         <!-- =========================
-             ONDAS
+              ONDAS
         ========================== -->
 
         <svg class="background-waves" preserveAspectRatio="none" viewBox="0 0 1000 1000"
@@ -834,14 +858,14 @@
             <circle class="wave wave-left-inner" cx="-100" cy="1100" r="520" fill="rgba(255, 255, 255, 0.08)" />
 
             <path class="wave wave-right" d="M 350 -100
-                   C 650 150, 980 350, 780 700
-                   C 620 980, 720 1080, 1100
+                C 650 150, 980 350, 780 700
+                C 620 980, 720 1080, 1100
             1100 L 1100 -100 Z" fill="rgba(255, 255, 255, 0.05)" />
 
         </svg>
 
         <!-- =========================
-             DASHBOARD CONTENT
+              DASHBOARD CONTENT
         ========================== -->
 
         <section class="dashboard">
@@ -1077,7 +1101,7 @@
     </main>
 
     <!-- =========================
-         JAVASCRIPT
+          JAVASCRIPT
     ========================== -->
 
     <script>
